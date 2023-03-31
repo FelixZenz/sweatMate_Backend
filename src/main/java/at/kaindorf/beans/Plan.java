@@ -12,7 +12,7 @@ import java.util.List;
 public class Plan {
     private String name;
     private User creator;
-    private List<Exercise> exercieceList;
+    private List<PlanExercise> exercieceList;
     private int numLikes;
     private int numDislikes;
 }

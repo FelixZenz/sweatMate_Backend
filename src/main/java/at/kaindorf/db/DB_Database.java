@@ -8,7 +8,7 @@ import java.sql.Statement;
 public class DB_Database {
     private static DB_Database theInstance;
     private Connection connection;
-    private DB_ChachedConnection cachedConnection;
+    private DB_CachedConnection cachedConnection;
 
     public static DB_Database getInstance() throws SQLException, ClassNotFoundException {
         if (theInstance == null) {
@@ -25,7 +25,7 @@ public class DB_Database {
     private DB_Database() throws SQLException, ClassNotFoundException {
         Class.forName(db_driver);
         connect();
-        cachedConnection = new DB_ChachedConnection(connection);
+        cachedConnection = new DB_CachedConnection(connection);
     }
 
     private void connect() throws SQLException {

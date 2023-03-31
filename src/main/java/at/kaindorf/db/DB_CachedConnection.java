@@ -5,11 +5,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedList;
 
-public class DB_ChachedConnection {
+public class DB_CachedConnection {
     private Connection connection;
     private LinkedList<Statement> statementQueue = new LinkedList<>();
 
-    public DB_ChachedConnection(Connection connection) {
+    public DB_CachedConnection(Connection connection) {
         this.connection = connection;
     }
 
