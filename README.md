@@ -6,6 +6,6 @@
 4. right click on the new DB > Restore
 5. select file.backup
 6. click on restore
-7. ignore the error on the bottom right side
+7. if occurs, ignore the error on the bottom right side
 8. right click on the DB > Refresh
 you should then see the tables in the table section :)
