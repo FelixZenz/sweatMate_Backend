@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LoginData {
     private String username;
-    private String password;
+    private String pwd;
 }

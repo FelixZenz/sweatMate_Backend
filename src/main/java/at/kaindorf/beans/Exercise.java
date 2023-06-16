@@ -1,5 +1,6 @@
 package at.kaindorf.beans;
 
+import at.kaindorf.annotations.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,8 +12,11 @@ import java.util.Arrays;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Exercise {
+    @Column(name = "exerciseid")
     private int exerciseID;
+    @Column(name = "exercise_name")
     private String exerciseName;
+    @Column(name = "video")
     private byte[] byteArrayForVideoExercise;
 
     public Exercise(String line) {
