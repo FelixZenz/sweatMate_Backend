@@ -1,5 +1,5 @@
-# sweatMate_Backend
-## Database:
+# Database
+## pgAdmin:
 1. download the zip file from Trello
 2. open pgAdmin
 3. create new Database (name doesn't matter, prefarebly sweatmate)
@@ -11,6 +11,6 @@
 9. Done 🤓
 
 
-### IntelliJ:
+## IntelliJ:
 create the db connection to the just created pgAdmin-database
 
