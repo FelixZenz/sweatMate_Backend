@@ -51,13 +51,13 @@ public class ExerciseDB {
                 .orElseThrow(NoSuchElementException::new);
     }
 
-    /*
+
     public void fillDBwithExercises(List<Exercise> exercises){
         for (Exercise e: exerciseList) {
             db_access.insertObject(e);
         }
     }
-    */
+
 
     //only testing purpose
 

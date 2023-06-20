@@ -12,14 +12,15 @@ import java.util.*;
 public class PlanDB {
     private DB_Access db_access = DB_Access.getInstance();
     private DB_Database database = DB_Database.getInstance();
+    private ExerciseDB exerciseDB = ExerciseDB.getInstance();
     private List<Plan> planList = new ArrayList<>();
     private static PlanDB instance;
 
-    public PlanDB() throws SQLException, ClassNotFoundException {
-        planList = getAllPlans();
+    public PlanDB() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
+        planList = fillPlans();
     }
 
-    public static PlanDB getInstance() throws SQLException, ClassNotFoundException {
+    public static PlanDB getInstance() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
         if(instance == null){
             instance = new PlanDB();
         }
@@ -27,7 +28,7 @@ public class PlanDB {
     }
 
     //receive all plans from DB
-    public List<Plan> getAllPlans() throws SQLException {
+    public List<Plan> fillPlans() throws SQLException {
         List<Plan> plans = new ArrayList<>();
         String sqlString = """
                             SELECT * FROM plan;
@@ -40,7 +41,12 @@ public class PlanDB {
                     resultSet.getString("planname"),resultSet.getInt("likes"),
                     resultSet.getInt("dislikes"), resultSet.getString("creator")));
         }
+        database.releaseStatement(statement);
         return plans;
+    }
+
+    public List<Plan> getAllPlans(){
+        return planList;
     }
 
     //Get ID for new Plan => getHighestID + 1 for the new TP
@@ -71,6 +77,7 @@ public class PlanDB {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        database.releaseStatement(statement);
         return id+1;
     }
 
@@ -130,23 +137,28 @@ public class PlanDB {
         return rates;
     }
 
-    public List<PlanDetail> getDetailsToPlan(int id){
-        List<PlanDetail> details = new ArrayList<>();
-        try {
-            String sqlString = "SELECT p.planid, p.planname, p.likes, p.dislikes, p.creator, pe.exerciseid, pe.num_sets, pe.num_reps, pe.details FROM plan p\n" +
-                    "INNER JOIN planexercise pe on p.planid = pe.planid WHERE p.planid = " + id + ";";
-            Statement statement = database.getStatement();
-            ResultSet resultSet = statement.executeQuery(sqlString);
-            while (resultSet.next()){
-                //planid, planname, likes, dislikes, creator, exerciseid, num_sets, num_reps, details
-                details.add(new PlanDetail(resultSet.getInt("planid"), resultSet.getString("planname"),
-                        resultSet.getInt("likes"), resultSet.getInt("dislikes"), resultSet.getString("creator"),
-                        resultSet.getInt("exerciseid"), resultSet.getInt("num_sets"), resultSet.getInt("num_reps"),
-                        resultSet.getString("details")));
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+
+    //SELECT * FROM planexercise WHERE planid = 1;
+    public List<PlanExercise> getExercisesForPlan(int planId){
+        List<PlanExercise> planExercises = new ArrayList<>();
+        Plan plan = getPlanByID(planId);
+        planExercises = plan.getExercieceList();
+        return planExercises;
+    }
+
+    public void deletePlan(Plan plan){
+        if(planList.contains(plan)){
+            planList.remove(plan);
         }
-        return details;
+    }
+
+    public List<Plan> getPlansFromUser(String username){
+        List<Plan> plans = new ArrayList<>();
+        for (Plan plan:planList) {
+            if(plan.getCreator().equals(username)){
+                plans.add(plan);
+            }
+        }
+        return plans;
     }
 }

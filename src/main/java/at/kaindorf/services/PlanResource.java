@@ -4,6 +4,7 @@ import at.kaindorf.beans.*;
 import at.kaindorf.db.DB_Access;
 import at.kaindorf.db.ExerciseDB;
 import at.kaindorf.db.PlanDB;
+import at.kaindorf.db.PlanExerciseDB;
 import at.kaindorf.jwt.JWTNeeded;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.container.ContainerRequestContext;
@@ -24,7 +25,7 @@ public class PlanResource {
 
     private DB_Access access = DB_Access.getInstance();
     private PlanDB planDB = PlanDB.getInstance();
-    private ExerciseDB exerciseDB = ExerciseDB.getInstance();
+    private PlanExerciseDB planExerciseDB = PlanExerciseDB.getInstance();
 
     public PlanResource() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
     }
@@ -34,21 +35,25 @@ public class PlanResource {
     @Path("/all")
     public Response getAllPlans(){
         List<Plan> planList = new ArrayList<>();
-        try {
-            planList = planDB.getAllPlans();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        planList = planDB.getAllPlans();
         return Response.ok(planList).build();
     }
 
     //getExercises for Plan
     @GET
-    @Path("/{planid}")
-    public Response getExercisesForPlan(@PathParam("planid") int planid){
-        List<PlanDetail> details = new ArrayList<>();
-        details = planDB.getDetailsToPlan(planid);
-        return Response.ok(details).build();
+    @Path("/{planId}")
+    public Response getExercisesForPlan(@PathParam("planId") int planId){
+        List<PlanExercise> planExercises = new ArrayList<>();
+        planExercises = planExerciseDB.getPlanexercisesForSinglePlan(planId);
+        return Response.ok(planExercises).build();
+    }
+
+    //getExercises for Plan
+    @GET
+    @Path("/id/{planId}")
+    public Response getPanByID(@PathParam("planId") int planId){
+        Plan plan = planDB.getPlanByID(planId);
+        return Response.ok(plan).build();
     }
 
 
@@ -87,11 +92,35 @@ public class PlanResource {
     //rate a plan
     @PUT
     @Path("/{planid}/{rating}/rate")
-    @JWTNeeded
     public Response ratePlan(@PathParam("planid") int planid, @PathParam("rating") int rating){
        int num =  planDB.updatePlanRating(planid, rating);
-
        return Response.ok(num).build();
+    }
+
+    //
+    @JWTNeeded
+    @DELETE
+    @Path("/{planid}")
+    public Response deletePlan(@PathParam("planid") int planId){
+        try{
+            Plan plan = planDB.getPlanByID(planId);
+            planDB.deletePlan(plan);
+            if(plan == null){
+                throw new RuntimeException("[!] Plan not found!");
+            }
+            return Response.ok(plan).build();
+        }
+        catch (RuntimeException e){
+            return Response.status(Response.Status.NOT_FOUND).entity(e).build();
+        }
+    }
+
+    @JWTNeeded
+    @GET
+    @Path("/details/{username}")
+    public Response getPlansFromUser(@PathParam("username") String username){
+        List<Plan> planList = planDB.getPlansFromUser(username);
+        return Response.ok(planList).build();
     }
 
 }

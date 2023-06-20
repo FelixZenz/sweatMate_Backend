@@ -6,17 +6,14 @@ import at.kaindorf.db.ExerciseDB;
 import at.kaindorf.db.PlanDB;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Path("/exercise")
 public class ExerciseResource {
@@ -38,5 +35,14 @@ public class ExerciseResource {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    //getExerciseByID
+    @GET
+    @Path("/{exerciseid}")
+    public Response getExercisesForPlan(@PathParam("exerciseid") int exerciseid){
+        Exercise exercise = new Exercise();
+        exercise = exerciseDB.findExerciseById(exerciseid);
+        return Response.ok(exercise).build();
     }
 }

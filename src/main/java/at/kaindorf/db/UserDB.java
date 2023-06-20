@@ -27,12 +27,12 @@ public class UserDB {
     }
 
     private UserDB() throws SQLException, ClassNotFoundException {
-        userList = getAllUser();
+        userList = fillUser();
         passwords = fillPasswords();
     }
 
     //function to get all Users
-    public List<User> getAllUser() throws SQLException {
+    public List<User> fillUser() throws SQLException {
         List<User> users = new ArrayList<>();
         String sqlString = """
                             SELECT * FROM "user";
@@ -45,6 +45,7 @@ public class UserDB {
                     resultSet.getString("firstname"), resultSet.getString("lastname"),
                     resultSet.getString("email"), resultSet.getString("pwd")));
         }
+        database.releaseStatement(statement);
         return users;
     }
 
@@ -75,5 +76,26 @@ public class UserDB {
                 .filter(user -> user.getUsername().equals(username))
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
+    }
+
+    public void insertUser(User user){
+        if(!userList.contains(user)){
+            userList.add(user);
+            passwords = fillPasswords();
+        }
+    }
+
+    public List<User> getAllUser(){
+        return userList;
+    }
+
+    public List<String> getAllUsernames(){
+        List<String> userNames = new ArrayList<>();
+        for (User user:userList) {
+            if(!userNames.contains(user.getUsername())){
+                userNames.add(user.getUsername());
+            }
+        }
+        return userNames;
     }
 }

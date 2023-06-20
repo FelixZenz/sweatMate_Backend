@@ -1,9 +1,41 @@
-id;name;video
-1;Bizeps Curls;video.mp4;
-2;Leg extention;'video2.mp4';
-3;Bench Press;'video3.mp4'
-4;Squats;'video4.mp4';
-5;Russian Twists;'video5.mp4'
-6;Tricpes;'video6.mp4';
-7;Chest Press;'video7.mp4'
-8;Blank;'video8.mp4';
+﻿ID;Name;Bild
+1;Pull-ups;back.png
+2;Deadlift (back);back.png
+3;Lat pull;back.png
+4;Row-Machin;back.png
+5;Rowing;back.png
+6;Burpees;belly.png
+7;Plank;belly.png
+8;Russian Twists;belly.png
+9;Sit-Ups;belly.png
+10;Criss Cross;belly.png
+11;Bicep curls (dumbbells);biceps.png
+12;Bicep curls (SZ bar);biceps.png
+13;Bicep curls (cable);biceps.png
+14;Bicep-Machin;biceps.png
+15;Hammer curls;biceps.png
+16;Bench press;chest.png
+17;Butterfly;chest.png
+18;Chest press;chest.png
+19;Dips (chest);chest.png
+20;Push-Up;chest.png
+21;Leg Press;legs.png
+22;Leg Extention;legs.png
+23;Squats;legs.png
+24;Hip Thrusts;legs.png
+25;Abductors;legs.png
+26;Shoulder Press;shoulders.png
+27;Lateral lift;shoulders.png
+28;Front lift;shoulders.png
+29;Butterfly reverse;shoulders.png
+30;Reverse Flys;shoulders.png
+31;Deadlift (torso);torso.png
+32;Back extension;torso.png
+33;Torso tilt;torso.png
+34;Leg raise;torso.png
+35;Crunch bench;torso.png
+36;Tricep Press (cable);triceps.png
+37;Tricep Press (dumbbells);triceps.png
+38;French-Press;triceps.png
+39;Dips (tricep);triceps.png
+40;Tricep-Machin;triceps.png

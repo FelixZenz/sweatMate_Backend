@@ -16,14 +16,13 @@ public class Exercise {
     private int exerciseID;
     @Column(name = "exercise_name")
     private String exerciseName;
-    @Column(name = "video")
-    private byte[] byteArrayForVideoExercise;
+    private String image;
 
     public Exercise(String line) {
         String[] tokens = line.split(";");
         this.exerciseID = Integer.parseInt(tokens[0]);
         this.exerciseName = tokens[1];
-        this.byteArrayForVideoExercise = tokens[2].getBytes();
+        this.image = tokens[2];
     }
 
     @Override
@@ -31,7 +30,6 @@ public class Exercise {
         return "Exercise{" +
                 "exerciseID=" + exerciseID +
                 ", exerciseName='" + exerciseName + '\'' +
-                ", byteArrayForVideoExercise=" + Arrays.toString(byteArrayForVideoExercise) +
-                '}'+"normal= " +new String(byteArrayForVideoExercise, StandardCharsets.UTF_8) +"\n";
+                ", byteArrayForVideoExercise=" + image + "\n";
     }
 }

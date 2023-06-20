@@ -6,14 +6,12 @@ import at.kaindorf.db.DB_Access;
 import at.kaindorf.db.UserDB;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -40,15 +38,7 @@ public class LoginResource {
         try{
             System.out.println(loginData);
             User user = userDB.login(loginData.getUsername(), loginData.getPwd());
-            return Response.ok(user).header("Authorization", createJWT(user))
-                    .header("Access-Control-Allow-Origin", "*")
-                    .header("Access-Control-Allow-Credentials", "true")
-                    .header("Access-Control-Allow-Headers",
-                            "origin, content-type, accept, authorization")
-                    .header("Access-Control-Allow-Methods",
-                            "GET, POST, PUT, DELETE, OPTIONS, HEAD")
-                    .entity(user)
-                    .build();
+            return Response.ok(user).header("Authorization", createJWT(user)).build();
         }catch (NoSuchElementException e){
             return Response.status(Response.Status.UNAUTHORIZED).entity(e).build();
         } catch (JOSEException e) {
@@ -60,7 +50,14 @@ public class LoginResource {
     @PUT
     public Response insertUser(User user){
         Optional<Object> userOptional = access.insertObject(user);
+        userDB.insertUser(user);
         return Response.accepted(userOptional.get()).build();
+    }
+
+    @GET
+    public Response getAllUsernames(){
+        List<String> usernames = userDB.getAllUsernames();
+        return Response.ok(usernames).build();
     }
 
 

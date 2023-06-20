@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SweatMate</title>
+  <meta name="description" content="SweatMate by Rannegger & Zenz">
+  <link rel="icon" href="./images/icon_sweatmate.svg">
+  <link rel="stylesheet" href="./styles/styles.css">
+  <script src="sample.js"></script>
+</head>
+
+<body onload="startOfProject();">
+<main>
+  <!-- Navigation -->
+  <nav class="navbar fixed-top">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="./index.html"><img src="./images/logo_sweatmate.svg" alt="Logo"></a>
+      </div>
+      <ul class="navbar-links">
+        <li><a class="active" href="./index.html">Home</a></li>
+        <li><a href="./discover/discover.html">Discover</a></li>
+        <li><a href="./about.html">About</a></li>
+        <li><a href="./account/account.html"><img src="./images/icon_login_inactive.svg" alt="Login"></a></li>
+      </ul>
+    </div>
+  </nav>
+<script>
+
+function startOfProject() {
+  if (!localStorage.getItem("ersterBesuch")) {
+    // Löschen Sie hier die Cookies oder führen Sie andere Aktionen durch, die nur beim ersten Laden ausgeführt werden sollen
+    document.cookie = "cookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Beispiel zum Löschen eines Cookies
+    var expiryDate = new Date();
+    expiryDate.setFullYear(2000); // Setzen Sie das Jahr auf eine vergangene Zeit
+    // Löschen des "jwt"-Cookies
+    document.cookie = "jwt=; expires=" + expiryDate.toUTCString() + "; path=/";
+    // Löschen des "us"-Cookies
+    document.cookie = "us=; expires=" + expiryDate.toUTCString() + "; path=/";
+    // Wiederholen Sie diesen Schritt für jedes Cookie, das Sie löschen möchten
+    // Speichern Sie den Status des ersten Besuchs im Local Storage
+    localStorage.setItem("ersterBesuch", "true");
+    getExercises();
+  }
+}
+</script>
+
+  <!-- Home screen image -->
+  <div>
+    <img src="./images/img_index.svg" alt="GYM" style="width: 100%;">
+  </div>
+
+  <!-- Cards container -->
+  <div class="cards-container">
+    <!-- Card 1 -->
+    <div class="card-main">
+      <img class="card-icon" src="./images/icon_card_login.svg" alt="Discover">
+      <h2 class="card-title">Login</h2>
+      <p class="card-text">
+        Create or log into your Account and <span class="card-text-bold">become a Sweat.</span>
+      </p>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="card-main">
+      <img class="card-icon" src="./images/icon_card_discover.svg" alt="Discover">
+      <h2 class="card-title">Discover</h2>
+      <p class="card-text">
+        <span class="card-text-bold">Discover</span> many different Trainingplans which are created by Sweats.
+      </p>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="card-main">
+      <img class="card-icon" src="./images/icon_card_rating.svg" alt="Discover">
+      <h2 class="card-title">Like or Dislike</h2>
+      <p class="card-text">
+        <span class="card-text-bold">Like or Dislike</span> different Trainingplans to save them and maybe also to try them out.
+      </p>
+    </div>
+  </div>
+</main>
+</body>
+
+</html>

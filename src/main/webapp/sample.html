@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="sample.js"></script>
+</head>
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font: 16px Arial;
+    }
+
+    /*the container must be positioned relative:*/
+    .autocomplete {
+        position: relative;
+        display: inline-block;
+    }
+
+    input {
+        border: 1px solid transparent;
+        background-color: #f1f1f1;
+        padding: 10px;
+        font-size: 16px;
+    }
+
+    input[type=text] {
+        background-color: #f1f1f1;
+        width: 100%;
+    }
+
+    input[type=submit] {
+        background-color: DodgerBlue;
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .autocomplete-items {
+        position: absolute;
+        border: 1px solid #d4d4d4;
+        border-bottom: none;
+        border-top: none;
+        z-index: 99;
+        /*position the autocomplete items to be the same width as the container:*/
+        top: 100%;
+        left: 0;
+        right: 0;
+    }
+
+    .autocomplete-items div {
+        padding: 10px;
+        cursor: pointer;
+        background-color: #fff;
+        border-bottom: 1px solid #d4d4d4;
+    }
+
+    /*when hovering an item:*/
+    .autocomplete-items div:hover {
+        background-color: #e9e9e9;
+    }
+
+    /*when navigating through the items using the arrow keys:*/
+    .autocomplete-active {
+        background-color: DodgerBlue !important;
+        color: #ffffff;
+    }
+</style>
+<body>
+<h1>
+    SweatMate
+</h1>
+
+
+    <div id="loginMsg"></div>
+<h3>Login</h3>
+<input type="user" id="user" placeholder="Enter Username" name="user" value="testuser">
+<input type="password" id="pwd" placeholder="Enter password" name="pwd" value="password">
+<button onclick="login(user.value, pwd.value)">Login</button>
+<h3>New User</h3>
+<input id="uname" placeholder="Enter Username" name="uname" value="testHTML">
+<input id="fname" placeholder="Enter Firstname" name="fname" value="Max">
+<input id="lname" placeholder="Enter Lastname" name="lname" value="Mustermann">
+<input id="email" placeholder="Enter EMail" name="email" value="max@muster.at">
+<input type="password" id="passwd" placeholder="Enter password" name="passwd" value="test">
+<button onclick="insertNewUser(uname.value, fname.value, lname.value, email.value, passwd.value)">Register</button>
+<h3>Exercises (Console)</h3>
+<button onclick="getExercises()">getAll</button>
+<h3>Plans</h3>
+<button onclick="getPlans()">getAll</button>
+<table class="table" id="planList">
+</table>
+<table class="table" id="exercises">
+</table>
+
+<h3>Inserting</h3>
+<h4>New Plan (you have to be logged in)</h4>
+<input id="plan" placeholder="Enter PLanname" name="plan" value="htmlPlan">
+<button onclick="createPlan(plan.value)">create</button>
+
+<div id = "ex" style="visibility: hidden">
+    <h5 id="plannameOutput"></h5>
+    <h5 id="creatorOutput"></h5>
+
+    <input id="exerciseName" type="text" list="myList" placeholder="Exercise Name" oninput="validateInput(event)">
+    <datalist id="myList">
+        <option value="Pull-ups"></option>
+        <option value="Deadlift (back)"></option>
+        <option value="Lat pull"></option>
+        <option value="Row-Machin"></option>
+        <option value="Rowing"></option>
+        <option value="Burpees"></option>
+        <option value="Plank"></option>
+        <option value="Russian Twists"></option>
+        <option value="Sit-Ups"></option>
+        <option value="Criss Cross"></option>
+        <option value="Bicep curls (dumbbells)"></option>
+        <option value="Bicep curls (SZ bar)"></option>
+        <option value="Bicep curls (cable)"></option>
+        <option value="Bicep-Machin"></option>
+        <option value="Hammer curls"></option>
+        <option value="Bench press"></option>
+        <option value="Butterfly"></option>
+        <option value="Chest press"></option>
+        <option value="Dips (chest)"></option>
+        <option value="Push-Up"></option>
+        <option value="Leg Press"></option>
+        <option value="Leg Extention"></option>
+        <option value="Squats"></option>
+        <option value="Hip Thrusts"></option>
+        <option value="Abductors"></option>
+        <option value="Shoulder Press"></option>
+        <option value="Lateral lift"></option>
+        <option value="Front lift"></option>
+        <option value="Butterfly reverse"></option>
+        <option value="Reverse Flys"></option>
+        <option value="Deadlift (torso)"></option>
+        <option value="Back extension"></option>
+        <option value="Torso tilt"></option>
+        <option value="Leg raise"></option>
+        <option value="Crunch bench"></option>
+        <option value="Tricep Press (cable)"></option>
+        <option value="Tricep Press (dumbbells)"></option>
+        <option value="French-Press"></option>
+        <option value="Dips (tricep)"></option>
+        <option value="Tricep-Machin"></option>
+    </datalist>
+    <script>
+        function validateInput(event) {
+            var input = event.target;
+            var dataList = input.list;
+            var options = Array.from(dataList.options);
+
+            var inputValue = input.value.toLowerCase();
+            var isValid = options.some(function(option) {
+                return option.value.toLowerCase() === inputValue;
+            });
+
+            if (!isValid) {
+                input.setCustomValidity('Ungültige Eingabe');
+            } else {
+                input.setCustomValidity('');
+            }
+
+            input.reportValidity();
+        }
+    </script>
+            <input id="sets" type="number" name="sets" placeholder="Number of Sets">
+            <input id="reps" type="number" name="reps" placeholder="Number of Reps">
+            <input id="details" type="text" name="details" placeholder="Details">
+
+        <button onclick="fullyPlan(exerciseName.value, sets.value, reps.value, details.value);">ADD</button>
+
+
+</div>
+</body>
+</html>
