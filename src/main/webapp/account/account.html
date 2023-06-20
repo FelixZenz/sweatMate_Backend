@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Account Settings</title>
+  <meta name="description" content="SweatMate by Rannegger & Zenz">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="./../images/icon_sweatmate.svg">
+  <link rel="stylesheet" href="./../styles/styles.css">
+  <script src="../sample.js"></script>
+</head>
+<body onload="getUserDetails();">
+
+<main>
+  <!-- Navigation -->
+  <nav class="navbar fixed-top">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="./../index.html"><img src="./../images/logo_sweatmate.svg" alt="Logo"></a>
+      </div>
+      <ul class="navbar-links">
+        <li><a href="./../index.html">Home</a></li>
+        <li><a href="./../discover/discover.html">Discover</a></li>
+        <li><a href="./../about.html">About</a></li>
+        <li><a href="./account.html"><img src="./../images/icon_login_active.svg" alt="Login"></a></li>
+      </ul>
+    </div>
+  </nav>
+  <div>
+    <div class="div-container-top">
+      <div class="flex-container">
+        <div>
+          <!-- Account picture -->
+          <img src="./../images/icon_account.svg" class="account-picture" alt="icon">
+        </div>
+        <div>
+          <!-- Username -->
+          <h2 id ="userNameOutputAccountPage" name ="userNameOutputAccountPage"></h2>
+          <div class="likes-container">
+            <img src="./../images/icon_like_inactive.svg" alt="icon">
+            <!-- Number of likes -->
+            <p id="likesAccountPage">122</p>
+            <img src="./../images/icon_dislike_inactive.svg" alt="icon">
+            <!-- Number of dislikes -->
+            <p id="dislikesAccountPage">24</p>
+          </div>
+        </div>
+        <div class="log-out-button">
+          <!-- Log out link -->
+          <a onclick="logout();">Log out</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="account-trainings-plans">
+      <div>
+        <h2 id="numOfPlans">Uploaded Training Plans (2)</h2>
+      </div>
+      <div>
+        <table class="account-trainings-plans-table">
+          <thead>
+          <tr>
+            <th>Title</th>
+            <th>Likes</th>
+            <th>Dislikes</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody id="accountTable">
+          <tr>
+            <!-- Title of training plan 1 -->
+            <td>Title 1</td>
+            <!-- Number of likes for training plan 1 -->
+            <td>100</td>
+            <!-- Number of dislikes for training plan 1 -->
+            <td>14</td>
+            <td><img src="./../images/icon_delete.svg" alt="Delete"></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

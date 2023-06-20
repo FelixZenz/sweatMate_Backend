@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <meta name="description" content="SweatMate by Rannegger & Zenz">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="./../images/icon_sweatmate.svg">
+  <link rel="stylesheet" href="./../styles/styles.css">
+  <script src="../sample.js"></script>
+</head>
+<body>
+<main>
+  <!-- Navigation -->
+  <nav class="navbar fixed-top">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="./../index.html"><img src="./../images/logo_sweatmate.svg" alt="Logo"></a>
+      </div>
+      <ul class="navbar-links">
+        <li><a href="./../index.html">Home</a></li>
+        <li><a href="./../discover/discover.html">Discover</a></li>
+        <li><a href="./../about.html">About</a></li>
+        <li><a href="/"><img src="./../images/icon_login_active.svg" alt="Login"></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div>
+    <!-- Image on the right -->
+    <img src="./../images/img_login.svg" alt="GYM" class="picture-right">
+  </div>
+  <div class="text-container">
+    <h1>Log in to your SweatMate</h1>
+    <h4>Good to have you back!</h4>
+    <div class="wrapper">
+        <div class="group">
+          <!-- Username input field -->
+          <input type="text" id="username" name="username" required>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label>Username</label>
+        </div>
+        <div class="group">
+          <!-- Password input field -->
+          <input type="password" id="password" name="password" required>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label>Password</label>
+        </div>
+        <div>
+          <!-- Log in button -->
+            <input class="button-primary" value="Log in" onclick="login(username.value, password.value);">
+        </div>
+        <div>
+          <!-- "Don't have an account?" button -->
+          <a href="./register.html">
+            <input class="button-tertiary" type="button" value="Don't have an account?">
+          </a>
+        </div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

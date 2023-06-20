@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Discover</title>
+  <meta name="description" content="SweatMate by Rannegger & Zenz">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="./../images/icon_sweatmate.svg">
+  <link rel="stylesheet" href="./../styles/styles.css">
+  <script src="../sample.js"></script>
+</head>
+
+<script>
+  function changeImageSrc(element) {
+    var like = document.getElementById('like');
+    var dislike = document.getElementById('dislike');
+
+    <!-- Like pressed -->
+    if (element.id === 'like' && like.src !== './../images/icon_like_active.svg') {
+      dislike.src = './../images/icon_dislike_inactive.svg';
+      like.src = './../images/icon_like_active.svg';
+    }
+    <!-- Like pressed [like active]-->
+    else if (element.id === 'like' && like.src === './../images/icon_like_active.svg') {
+      dislike.src = './../images/icon_dislike_inactive.svg';
+      like.src = './../images/icon_like_inactive.svg';
+    }
+    <!-- Dislike pressed -->
+    else if (element.id === 'dislike' && dislike.src !== './../images/icon_dislike_active.svg') {
+      like.src = './../images/icon_like_inactive.svg';
+      dislike.src = './../images/icon_dislike_active.svg';
+    }
+    <!-- Dislike pressed [dislike active]-->
+    else if (element.id === 'dislike' && dislike.src === './../images/icon_dislike_active.svg') {
+      like.src = './../images/icon_like_inactive.svg';
+      dislike.src = './../images/icon_dislike_inactive.svg';
+    }
+  }
+</script>
+
+<body onload="getPlans();">
+<main>
+  <!-- Navigation -->
+  <nav class="navbar fixed-top">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="./../index.html"><img src="./../images/logo_sweatmate.svg" alt="Logo"></a>
+      </div>
+      <ul class="navbar-links">
+        <li><a href="./../index.html">Home</a></li>
+        <li><a href="./discover.html" class="active">Discover</a></li>
+        <li><a href="./../about.html">About</a></li>
+        <li><a href="./../account/account.html"><img src="./../images/icon_login_inactive.svg" alt="Login"></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="discover-functions">
+    <div class="discover-left-items">
+      <!-- Add Button -->
+      <a href="./add.html">
+        <button class="add-button">+ Add</button>
+      </a>
+
+      <!-- Search Bar -->
+      <input class="search-bar" type="search" placeholder="Search...">
+    </div>
+  </div>
+
+  <!--
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-upper">
+        <img src="./../images/img_card.svg" alt="card">
+      </div>
+
+      <div class="card-lower">
+        <h2>Title</h2>
+
+        <p class="subtitle">Username</p>
+
+        <div class="card-lower-part">
+          <div class="card-likes-container">
+            <a>
+              <img
+                src="./../images/icon_like_inactive.svg"
+                id="like"
+                onclick="changeImageSrc(this)"
+                alt="icon">
+            </a>
+
+            <a>
+              <img
+                src="./../images/icon_dislike_inactive.svg"
+                id="dislike"
+                onclick="changeImageSrc(this)"
+                alt="icon">
+            </a>
+          </div>
+
+          <div>
+            <a class="card-link" href="./details.html">Learn more</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-upper">
+        <img src="./../images/img_card.svg" alt="card">
+      </div>
+
+
+      <div class="card-lower">
+
+        <h2>Title</h2>
+
+
+        <p class="subtitle">Username</p>
+
+
+        <div class="card-lower-part">
+
+          <div class="card-likes-container">
+
+            <a>
+              <img
+                src="./../images/icon_like_inactive.svg"
+                alt="icon">
+            </a>
+
+
+            <a>
+              <img
+                src="./../images/icon_dislike_inactive.svg"
+                alt="icon">
+            </a>
+          </div>
+
+
+          <div>
+            <a class="card-link" href="./details.html">Learn more</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  -->
+  <table class="account-trainings-plans-table" id="allPlansTable"></table>
+</main>
+</body>
+
+</html>
