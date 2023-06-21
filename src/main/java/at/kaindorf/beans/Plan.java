@@ -40,8 +40,7 @@ public class Plan {
     }
 
     public void addPlanExercise(PlanExercise exercise){
-
-        if(!exercieceList.contains(exercise)){
+        if(!exercieceList.contains(exercise)) {
             exercieceList.add(exercise);
         }
     }

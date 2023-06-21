@@ -408,11 +408,14 @@ h4 {
   margin-left: 30px;
 }
 
-.likes-container {
+
+.email-container {
   display: flex;
   align-items: center;
-  margin-top: 5px;
+  margin-left: 30px;
+  color: #657885;
 }
+
 
 .likes-container img {
   height: 20px;
@@ -591,16 +594,22 @@ h4 {
 }
 
 .exercise-input-picture {
-  height: 200px;
-  width: 300px;
+
   border-radius: 10px;
-  background: url("../images/img_default_add.svg");
+  position: relative;
+  left: -50px;
+  /*top: -50px;*/
+
   cursor: pointer;
 }
 
 .exercise-input-picture img {
+  /*
   margin-top: 25%;
   margin-left: 40%;
+  */
+  height: auto;
+  width: 200px;
 }
 
 .exercise-input-inputs {
@@ -780,10 +789,22 @@ h4 {
   background-repeat: no-repeat;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+.like-dislike-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-right: 50px;
+}
+
+.like-dislike-container img {
+  margin-left: 10px;
+  cursor: pointer;
 }
 
 .discover-container {
-  position: relative;
+  /*position: relative;*/
   margin-left: 50px;
 }
 

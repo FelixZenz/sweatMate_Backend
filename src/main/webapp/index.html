@@ -31,7 +31,7 @@
 function startOfProject() {
   if (!localStorage.getItem("ersterBesuch")) {
     // Löschen Sie hier die Cookies oder führen Sie andere Aktionen durch, die nur beim ersten Laden ausgeführt werden sollen
-    document.cookie = "cookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Beispiel zum Löschen eines Cookies
+    //document.cookie = "cookieName=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"; // Beispiel zum Löschen eines Cookies
     var expiryDate = new Date();
     expiryDate.setFullYear(2000); // Setzen Sie das Jahr auf eine vergangene Zeit
     // Löschen des "jwt"-Cookies
@@ -76,7 +76,7 @@ function startOfProject() {
       <img class="card-icon" src="./images/icon_card_rating.svg" alt="Discover">
       <h2 class="card-title">Like or Dislike</h2>
       <p class="card-text">
-        <span class="card-text-bold">Like or Dislike</span> different Trainingplans to save them and maybe also to try them out.
+        <span class="card-text-bold">Like or Dislike</span> different Trainingplans to give the Sweats some Feedback.
       </p>
     </div>
   </div>

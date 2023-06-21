@@ -1,7 +1,7 @@
 //LOGIN
 function logout() {
-    document.cookie = "jwt=";
-    document.cookie = "us=";
+    document.cookie = "jwt="+""+"; path=/";
+    document.cookie = "us="+""+"; path=/";
     window.location.href = "login.html";
 }
 
@@ -26,13 +26,13 @@ async function login(name, pwd) {
         }
         else {
             let _jwt = response.headers.get("Authorization");
-            document.cookie = "jwt=" + _jwt;
+            document.cookie = "jwt=" + _jwt+"; path=/";
             let result = await response.json();
             //console.log(result);
             alert("You are logged in as " + result.username);
             //await changeSite("account");
             let wert = result.username;
-            document.cookie = "us=" + wert;
+            document.cookie = "us=" + wert+"; path=/";
             // URL für die neue Seite mit dem Parameter
             //var neueSeiteURL = "account.html?us=" + wert;
             window.location.href = "account.html";
@@ -70,7 +70,7 @@ async function getUserDetails() {
     // Abrufen des Werts aus der URL
     let jwt = getCookie("jwt");
     let wert = getCookie("us");
-    if(jwt == "" || wert == ""){
+    if(jwt == "" || wert == "" || jwt == null || wert == null){
         window.location.href = "login.html";
     }
     // Verwendung des Werts
@@ -93,9 +93,19 @@ async function getUserDetails() {
             document.getElementById("userNameOutputAccountPage").innerHTML = wert;
             //_jwt = response.headers.get("Authorization");
             let result = await response.json();
-            //console.log(result);
+            console.log(result);
+//            document.getElementById("accountEmail").innerHTML =
+
+                //console.log(result);
             let numPlans = Object.keys(result).length;
+            let likes = 0;
+            let dislikes = 0;
+            for(element of result){
+                likes = likes+element.numLikes;
+                dislikes = dislikes+element.numDislikes;
+            }
             document.getElementById("numOfPlans").innerHTML = 'Uploaded Training Plans ('+numPlans+')';
+            document.getElementById("accountEmail").innerHTML = likes+" likes | " + dislikes+" dislikes";
             showAccountDetails(result);
             //alert(document.documentURI);
         }
@@ -118,51 +128,22 @@ function showAccountDetails(obj){
         <td>${p.numLikes}</td>
         <!-- Number of dislikes for training plan 1 -->
         <td>${p.numDislikes}</td>
-        <td><img src="../images/icon_delete.svg" alt="Delete"></td>
+        <td><img src="../images/icon_delete.svg" alt="Delete" onclick="deletePlan(${p.planid});"></td>
     </tr>`);
     document.getElementById("accountTable").innerHTML = html;
 }
 
-/*
-function login(name, pwd) {
-    const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/login';
-    const user = {
-        username: name,
-        pwd: pwd
-    };
+async function deletePlan(id){
+    const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/plan/'+id;
     const init = {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(user)
+        method: 'DELETE',
     };
-    fetch(url, init)
-        .then(res => {
-            if (!res.ok) {
-                alert("LOGIN FAILED")
-                throw Error("HTTP-error: " + res.status);
-            }
-            _jwt = res.headers.get("Authorization");
-            return res.json();
-        })
-        .then(json => {
-            console.log(json);
-            var userObj = json;
-            //console.log(userObj);
-            alert("You are logged in as " + userObj.username);
-            window.location.href = "account.html";
-            //getUserDetails();
-            alert(document.documentURI);
-            getUserDetails(value);
-        })
-        .catch(err => {
-            console.log(err.toString());
-            alert("LOGIN FAILED")
-        });
-
+    let response = await fetch(url, init);
+    let result = await response.json();
+    console.log("Deletet: " + result);
+    getUserDetails();
 }
-*/
+
 
 //create New USER
 async function insertNewUser(uname, fname, lname, email, pwd) {
@@ -227,6 +208,24 @@ function getExercises() {
         });
 }
 
+
+function sort(criteria){
+    const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/plan/all/'+criteria;
+    fetch(url)
+        .then(res => {
+            if (!res.ok) {
+                throw Error("HTTP-error: " + res.status);
+            }
+            return res.json();
+        })
+        .then(data => {
+            console.log(data);
+            displayPlans(data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
 //GET all Plans
 var plans = new Map();
 function getPlans() {
@@ -249,35 +248,54 @@ function getPlans() {
             console.log(err);
         });
 }
-/*
-function beforeAddPlan(p){
-    addValueToPlans(p.planid, p.planname);
-    addValueToPlans(p.planid, p.likes);
-    addValueToPlans(p.planid, p.dislikes);
-    addValueToPlans(p.planid, p.creator);
-}
 
-// Füge Werte zur Map hinzu
-function addValueToPlans(key, value) {
-    if (plans.has(key)) {
-        // Wenn der Schlüssel bereits existiert, füge den Wert dem entsprechenden Array hinzu
-        const values = plans.get(key);
-        values.push(value);
-    } else {
-        // Wenn der Schlüssel noch nicht existiert, erstelle ein neues Array mit dem Wert
-        plans.set(key, [value]);
-    }
-}
-*/
 
 function displayPlans(data) {
     let html = '';
-    data.forEach(p => html += `<tr onclick="handlerPlanExercises(${p.planid});"><td><img src="./../images/img_card.svg" alt="card"></td>
-<td style="font-weight: bold;font-size: 20pt">${p.planname}
-<p style="font-size: 12pt">by ${p.creator}</p></td>
-<td><img src="./../images/icon_like_inactive.svg">${p.numLikes}</td>
-<td><img src="./../images/icon_dislike_inactive.svg">${p.numDislikes}</td></tr>`);
-    document.getElementById('allPlansTable').innerHTML = html;
+    data.forEach(p => html += `
+    <!-- Training Plan Cards -->
+    <div class="card">
+      <!-- Upper section of the card -->
+      <div class="card-upper">
+        <img src="./../images/img_card.svg" alt="card">
+      </div>
+
+      <!-- Lower section of the card -->
+      <div class="card-lower">
+        <!-- Card title -->
+        <h2>${p.planname}</h2>
+
+        <!-- Card subtitle -->
+        <p class="subtitle">by ${p.creator}</p>
+
+        <!-- Card lower part -->
+        <div class="card-lower-part">
+          <!-- Card likes container -->
+       <!-- Card likes container -->
+          <div class="card-likes-container">
+            <!-- Likes -->
+            <p style="font-weight: bold; color: #28B406">${p.numLikes} Likes</p>
+            <!--<img src="./../images/icon_like_inactive.svg" alt="icon">-->
+
+
+            <!-- Dislikes -->
+            <p style="font-weight: bold; color: #D20303">${p.numDislikes} Dislikes</p>
+            <!--<img src="./../images/icon_dislike_inactive.svg" alt="icon">-->
+
+          </div>
+
+          <!-- Learn more link -->
+          <div>
+            <a class="card-link" onclick="handlerPlanExercises(${p.planid});">Learn more</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    `);
+
+    document.getElementById("cardOutput").innerHTML = html;
+
+
 }
 
 
@@ -294,6 +312,7 @@ async function getPlanExercises() {
         let response = await fetch(url);
         let result = await response.json();
         await displayPlanInfosForExDetails(id);
+        console.log(result);
         displayExercises(result);
         //alert(document.documentURI);
     } catch (e){
@@ -313,92 +332,256 @@ async function displayPlanInfosForExDetails(id){
 async function displayExercises(ex) {
     //console.log(ex);
     let counter = 1;
-    for(let elem of ex){
-        var url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/exercise/'+ elem.exerciseId;
-        let response = await fetch(url)
+    let html = "";
+    for(let elem of ex) {
+        var url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/exercise/' + elem.exerciseId;
+        let response = await fetch(url);
         let result = await response.json();
         console.log(result);
-        document.getElementById("detailsExDes"+counter).innerHTML = elem.details;
-        document.getElementById("detialsRepsSets"+counter).innerHTML = elem.num_sets +" Sets with " + elem.num_reps+" Reps";
-        //document.getElementById("numSets"+counter).innerHTML = elem.numSets;
-        document.getElementById("detailsExName"+counter).innerHTML = result.exerciseName;
-        document.getElementById("picture"+counter).innerHTML = `<img src="../images/${result.image}">`;
-        counter = counter+1;
+        html +=
+            `
+        <div class="exercise-output-top">
+        <div class="exercise-output-picture"><img src="../images/${result.image}" style="position: relative;width: 200px;height: auto;"></div>
+        <div class="exercise-output">
+        <div style="margin-bottom: 50px;">
+        <!-- Exercise Name -->
+        <h2>${result.exerciseName}</h2>
+        <div class="exercise-description">
+          <!-- Exercise Description -->
+          <p>${elem.details}
+          </p>
+          <!-- Reps and Sets Information -->
+          <h5>${elem.num_sets + " Sets with " + elem.num_reps + " Reps"}</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+        `;
     }
-    /*
-    var url2 = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/exercise/'+ result.exerciseId;
-    let responseEx = await fetch(url2)
-
-
-    if(planBefore != plan.planId){
-        htmlEx = '<tr><th>Reps</th><th>Sets</th><th>details</th><th>Name</th><th>Image</th></tr>';
-    }
-    htmlEx += `<tr><td>${plan.num_reps}</td>
-    <td>${plan.num_sets}</td><td>${plan.details}</td>
-    <td>${ex.exerciseName}</td><td><img src="images/${ex.image}"></td></tr>;`;
-    document.getElementById('exercises').innerHTML = htmlEx;
-    planBefore = plan.planId;
-    */
-
+    document.getElementById("detailsOutput").innerHTML = html;
 }
 
-//Single Exercise
-function getExercise(exID, plan) {
-    const urlEx = './api/exercise/' + `${exID}`;
-    fetch(urlEx)
-        .then(res => {
-            if (!res.ok) {
-                throw Error("HTTP-error: " + res.status);
-            }
-            return res.json();
-        })
-        .then(json => {
-            displayExercises(plan, json)
-        })
-        .catch(err => console.log(err));
+
+function checkUser(){
+    let user = getCookie("us");
+    let jwt = getCookie("jwt");
+    if(!user || !jwt){
+        alert("You have to log into your account, if you want to create a Plan!");
+        window.location.href = "discover.html";
+    }
 }
 
-let htmlEx = '<tr><th>Reps</th><th>Sets</th><th>details</th><th>Name</th><th>Image</th></tr>';
-let planBefore = 0;
-
-
-
-
-var planid = 0;
-const createPlan = (planname) => {
-    const url = './api/plan/' + `${planname}`;
+async function addPlan() {
+    let planname = document.getElementById("name-tp").value;
+    let user = getCookie("us");
+    let jwt = getCookie("jwt");
+    const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/plan/' + planname + '/' + user;
     const init = {
         method: 'PUT',
         headers: {
-            'Authorization': _jwt
+            'Authorization': jwt
         }
-    };
-    fetch(url, init)
-        .then(res => {
-            if (!res.ok) {
-                document.getElementById("loginMsg").innerHTML = "INSERTING PLAN failed";
-                throw Error("HTTP-error: " + res.status);
+    }
+    try {
+        let response = await fetch(url, init);
+        if (!response.ok) {
+            console.log("CREATE PLAN FAILED");
+            throw Error("HTTP-error: " + res.status);
+        } else {
+            //let _jwt = response.headers.get("Authorization");
+            //document.cookie = "jwt=" + _jwt+"; path=/";
+            let result = await response.json();
+            console.log(result);
+            let planID = result.planid;
+            console.log(planID);
+            // URL für die neue Seite mit dem Parameter
+            var neueSeiteURL = "add.html?pId=" + planID;
+            window.location.href= neueSeiteURL;
+        }
+        //}
+        console.log(exerciseArr);
+    } catch (e) {
+        console.log(e.toString());
+        console.log("Plan creation failed");
+    }
+}
+
+async function fillPlanOutput(){
+    let id = getURLParameter("pId");
+    const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/plan/id/' + id;
+    let response = await fetch(url);
+    let result = await response.json();
+    document.getElementById("tpNameH2").innerHTML = result.planname;
+}
+
+function checkInput(){
+    let exElem = document.getElementById("exerciseName1");
+    let repElem = document.getElementById("numReps1");
+    let setElem = document.getElementById("numSets1");
+    if(exElem !== "" && repElem !== "" && setElem !== ""){
+        addPlanExercise(exElem, repElem, setElem);
+    }
+    else{
+        alert("Missing Input, or Exercise already exists in the plan!");
+    }
+}
+
+let exerciseArr = [];
+async function addPlanExercise(exElem, repElem, setElem){
+    let planID = getURLParameter("pId");
+    //console.log(planID);
+    let ex = exElem.value;
+    let reps = repElem.value;
+    let sets = setElem.value;
+    let details = document.getElementById("description1").value;
+    details = details ? details : "";
+    let image;
+    let exId;
+
+        const urlEx = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/exercise';
+        let responseEX = await fetch(urlEx);
+        let resultEx = await responseEX.json();
+        // console.log(resultEx);
+        for(let exerciseObj of resultEx){
+            if (exerciseObj.exerciseName === ex){
+                console.log(exerciseObj);
+                image = exerciseObj.image;
+                exId = exerciseObj.exerciseID;
+                break;
             }
-            return res.json();
-        })
-        .then(json => {
-            document.getElementById("creatorOutput").innerHTML = json.creator;
-            document.getElementById("plannameOutput").innerHTML = json.planname;
-            planid = json.planid;
-            addExercises(json);
-        })
-        .catch(err => console.log(err));
-};
+        }
+        var exercise1 = new Exercise(ex, reps, sets, details, exId, image);
+        exerciseArr.push(exercise1);
+        displayAddedExercises(exerciseArr);
+        //newPlanEx()
+        // console.log(exercise1);
 
-const addExercises = (ex) => {
-    document.getElementById("ex").style = "visibility: visible";
+        //Fetch für PlanExercise
+        const planEx = {
+            planId: planID,
+            exerciseId: exId,
+            num_sets: sets,
+            num_reps: reps,
+            details: details
+        };
+        const initPE = {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(planEx)
+        };
+        const urlPE = "http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/plan/pe";
+        try {
+            let responsePE = await fetch(urlPE, initPE);
+            if (!responsePE.ok) {
+                console.log("ADD PE FAILED");
+                throw Error("HTTP-error: " + responsePE.status);
+            }
+            else {
+                let resultPE = await responsePE.json();
+                console.log(resultPE);
+                document.getElementById("exerciseName1").innerHTML = "";
+                document.getElementById("numSets1").innerHTML = "";
+                document.getElementById("numReps1").innerHTML = "";
+                document.getElementById("description1").innerHTML = "";
+            }
+        } catch (e){
+            console.log(e.toString());
+            console.log("inlanexercise FAILED");
+        }
+
+
+
+
+    //}
+    console.log(exerciseArr);
 }
 
-const fullyPlan = (exerciseName, sets, reps, details) => {
-    console.log(exerciseName, sets, reps, details, planid);
-    const exerciseId = exercises.get(exerciseName);
-    console.log(exerciseId);
-
+function displayAddedExercises(arr){
+    let html = '';
+    for(var elem of arr){
+        html+=
+            `
+          <div class="exercise-input-top">
+    <!-- Exercise input picture -->
+    <div class="exercise-input-picture">
+      <img src="./../images/${elem.image}" alt="icon">
+    </div>
+    <!-- Exercise input inputs -->
+    <div class="exercise-input-inputs">
+      <div style="margin-bottom: 50px;">
+        <!-- Name input -->
+        <label for="exOut">Name</label>
+        <input id="exOut" type="text" value="${elem.exerciseName}" disabled>
+      </div>
+      <!-- Number of Sets and Number of Reps labels -->
+      <label for="numSetsOut">Number of Sets</label>
+      <label for="numRepsOut">Number of Reps</label>
+      <!-- Number of Sets and Number of Reps inputs -->
+      <div class="num-container">
+        <input type="number" class="num" id="numSetsOut" value="${elem.sets}" disabled>
+        <input type="number" class="num" id="numRepsOut" value="${elem.reps}" disabled>
+      </div>
+    </div>
+    <!-- Exercise input textarea -->
+    <div class="exercise-input-textarea">
+      <!-- Description label -->
+      <label for="descriptionOut">Description</label>
+      <!-- Description textarea -->
+      <textarea class="description" id="descriptionOut" disabled>${elem.description}</textarea>
+    </div>
+  </div>  
+     `;
+    }
+    document.getElementById("outputAlreadyAddedExercises").innerHTML = html;
+    document.getElementById("finishBtn").style = "visibility: visible;float: right;margin-top: -15px;";
 }
+class Exercise {
+    constructor(exerciseName, reps, sets, description, exerciseId, image) {
+        this.exerciseName = exerciseName;
+        this.reps = reps;
+        this.sets = sets;
+        this.description = description;
+        this.exerciseId = exerciseId;
+        this.image = image;
+    }
+}
+
+function finish(){
+    window.location.href = "discover.html";
+}
+
+
+//rating
+async function ratePlan(type) {
+    let planid = getURLParameter('id');
+    let rating = (type === 'like') ? 1 : 0;
+    const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/plan/'+planid+'/'+rating+'/rate';
+    const init = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
+
+    try {
+        let response = await fetch(url, init);
+        if (!response.ok) {
+            console.log("like failed");
+            throw Error("HTTP-error: " + res.status);
+        }
+        else {
+            let result = await response.json();
+            console.log(result);
+            document.getElementById("likeBtn").style ="disabled;";
+            document.getElementById("dislikeBtn").style ="disabled;";
+        }
+    } catch (e) {
+        console.log(e.toString());
+    }
+}
+
+
 
 

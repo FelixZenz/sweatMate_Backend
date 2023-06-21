@@ -60,7 +60,7 @@
   <script src="../sample.js"></script>
 </head>
 
-<body>
+<body onload="fillPlanOutput();">
 <main>
   <!-- Navigation -->
   <nav class="navbar fixed-top">
@@ -79,22 +79,23 @@
 
   <div>
     <div class="add-div-top">
-      <h2>Add Trainingsplan</h2>
+      <h2 id="tpNameH2">Add Trainingsplan</h2>
     </div>
 
     <div class="back-button-div">
       <a class="back-button" href="./discover.html">Go Back</a>
+      <button class="post-trainingsplan" style="visibility: hidden;" onclick="finish();" id="finishBtn">
+        Finish
+      </button>
     </div>
 
-    <div style="margin-top: 25px;">
-      <label for="name-tp" class="name-tp-label">Name of Trainingsplan</label>
-      <input type="text" class="name-tp" placeholder="Name" id="name-tp">
-    </div>
+  <div id="outputAlreadyAddedExercises" style="opacity: 0.5">
+
   </div>
 
   <div class="exercise-input-top">
     <!-- Exercise input picture -->
-    <div class="exercise-input-picture">
+    <div class="exercise-input-picture" id="addImg1">
       <img src="./../images/icon_edit.svg" alt="icon">
     </div>
     <!-- Exercise input inputs -->
@@ -146,7 +147,8 @@
           <option value="Tricep-Machin"></option>
         </datalist>
         <script>
-          function validateInput(event) {
+          let image;
+          async function validateInput(event) {
             var input = event.target;
             var dataList = input.list;
             var options = Array.from(dataList.options);
@@ -157,10 +159,11 @@
             });
 
             if (!isValid) {
-              input.setCustomValidity('Ungültige Eingabe');
+              input.setCustomValidity('Invalid Input');
             } else {
-              let image = setImageForAddPlan(inputValue);
+              await setImageForAddPlan(inputValue);
               console.log(image);
+              document.getElementById("addImg1").innerHTML = `<img src="./../images/${image}" alt="icon">`;
               input.setCustomValidity('');
             }
 
@@ -171,10 +174,8 @@
             const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/exercise';
             let response = await fetch(url);
             let result = await response.json();
-            let image = "";
-
             for(elem of result){
-             console.log(elem);
+             //console.log(elem);
               if(elem.exerciseName === value){
                 image = elem.image;
                 return image;
@@ -202,386 +203,10 @@
   </div>
 
 
-  <div class="exercise-input-top">
-    <!-- Exercise input picture -->
-    <div class="exercise-input-picture">
-      <img src="./../images/icon_edit.svg" alt="icon">
-    </div>
-    <!-- Exercise input inputs -->
-    <div class="exercise-input-inputs">
-      <div style="margin-bottom: 50px;">
-        <!-- Name input -->
-        <label for="exerciseName2">Name</label>
-        <input id="exerciseName2" type="text" list="myList" placeholder="Exercise Name" oninput="validateInput2(event)">
-        <datalist id="myList2">
-          <option value="Pull-ups"></option>
-          <option value="Deadlift (back)"></option>
-          <option value="Lat pull"></option>
-          <option value="Row-Machin"></option>
-          <option value="Rowing"></option>
-          <option value="Burpees"></option>
-          <option value="Plank"></option>
-          <option value="Russian Twists"></option>
-          <option value="Sit-Ups"></option>
-          <option value="Criss Cross"></option>
-          <option value="Bicep curls (dumbbells)"></option>
-          <option value="Bicep curls (SZ bar)"></option>
-          <option value="Bicep curls (cable)"></option>
-          <option value="Bicep-Machin"></option>
-          <option value="Hammer curls"></option>
-          <option value="Bench press"></option>
-          <option value="Butterfly"></option>
-          <option value="Chest press"></option>
-          <option value="Dips (chest)"></option>
-          <option value="Push-Up"></option>
-          <option value="Leg Press"></option>
-          <option value="Leg Extention"></option>
-          <option value="Squats"></option>
-          <option value="Hip Thrusts"></option>
-          <option value="Abductors"></option>
-          <option value="Shoulder Press"></option>
-          <option value="Lateral lift"></option>
-          <option value="Front lift"></option>
-          <option value="Butterfly reverse"></option>
-          <option value="Reverse Flys"></option>
-          <option value="Deadlift (torso)"></option>
-          <option value="Back extension"></option>
-          <option value="Torso tilt"></option>
-          <option value="Leg raise"></option>
-          <option value="Crunch bench"></option>
-          <option value="Tricep Press (cable)"></option>
-          <option value="Tricep Press (dumbbells)"></option>
-          <option value="French-Press"></option>
-          <option value="Dips (tricep)"></option>
-          <option value="Tricep-Machin"></option>
-        </datalist>
-        <script>
-          function validateInput2(event) {
-            var input = event.target;
-            var dataList = input.list;
-            var options = Array.from(dataList.options);
-
-            var inputValue = input.value.toLowerCase();
-            var isValid = options.some(function(option) {
-              return option.value.toLowerCase() === inputValue;
-            });
-
-            if (!isValid) {
-              input.setCustomValidity('Ungültige Eingabe');
-            } else {
-              input.setCustomValidity('');
-            }
-            input.reportValidity();
-          }
-        </script>
-      </div>
-      <!-- Number of Sets and Number of Reps labels -->
-      <label for="numSets2">Number of Sets</label>
-      <label for="numReps2">Number of Reps</label>
-      <!-- Number of Sets and Number of Reps inputs -->
-      <div class="num-container">
-        <input type="number" class="num" placeholder="0" min="0" id="numSets2">
-        <input type="number" class="num" placeholder="0" min="0" id="numReps2">
-      </div>
-    </div>
-    <!-- Exercise input textarea -->
-    <div class="exercise-input-textarea">
-      <!-- Description label -->
-      <label for="description2">Description</label>
-      <!-- Description textarea -->
-      <textarea class="description" placeholder="Describe how to do this exercise..." id="description2"></textarea>
-    </div>
-  </div>
 
 
 
-  <div class="exercise-input-top">
-    <!-- Exercise input picture -->
-    <div class="exercise-input-picture">
-      <img src="./../images/icon_edit.svg" alt="icon">
-    </div>
-    <!-- Exercise input inputs -->
-    <div class="exercise-input-inputs">
-      <div style="margin-bottom: 50px;">
-        <!-- Name input -->
-        <label for="exerciseName3">Name</label>
-        <input id="exerciseName3" type="text" list="myList" placeholder="Exercise Name" oninput="validateInput3(event)">
-        <datalist id="myList3">
-          <option value="Pull-ups"></option>
-          <option value="Deadlift (back)"></option>
-          <option value="Lat pull"></option>
-          <option value="Row-Machin"></option>
-          <option value="Rowing"></option>
-          <option value="Burpees"></option>
-          <option value="Plank"></option>
-          <option value="Russian Twists"></option>
-          <option value="Sit-Ups"></option>
-          <option value="Criss Cross"></option>
-          <option value="Bicep curls (dumbbells)"></option>
-          <option value="Bicep curls (SZ bar)"></option>
-          <option value="Bicep curls (cable)"></option>
-          <option value="Bicep-Machin"></option>
-          <option value="Hammer curls"></option>
-          <option value="Bench press"></option>
-          <option value="Butterfly"></option>
-          <option value="Chest press"></option>
-          <option value="Dips (chest)"></option>
-          <option value="Push-Up"></option>
-          <option value="Leg Press"></option>
-          <option value="Leg Extention"></option>
-          <option value="Squats"></option>
-          <option value="Hip Thrusts"></option>
-          <option value="Abductors"></option>
-          <option value="Shoulder Press"></option>
-          <option value="Lateral lift"></option>
-          <option value="Front lift"></option>
-          <option value="Butterfly reverse"></option>
-          <option value="Reverse Flys"></option>
-          <option value="Deadlift (torso)"></option>
-          <option value="Back extension"></option>
-          <option value="Torso tilt"></option>
-          <option value="Leg raise"></option>
-          <option value="Crunch bench"></option>
-          <option value="Tricep Press (cable)"></option>
-          <option value="Tricep Press (dumbbells)"></option>
-          <option value="French-Press"></option>
-          <option value="Dips (tricep)"></option>
-          <option value="Tricep-Machin"></option>
-        </datalist>
-        <script>
-          function validateInput3(event) {
-            var input = event.target;
-            var dataList = input.list;
-            var options = Array.from(dataList.options);
-
-            var inputValue = input.value.toLowerCase();
-            var isValid = options.some(function(option) {
-              return option.value.toLowerCase() === inputValue;
-            });
-
-            if (!isValid) {
-              input.setCustomValidity('Ungültige Eingabe');
-            } else {
-              input.setCustomValidity('');
-            }
-            input.reportValidity();
-          }
-        </script>
-      </div>
-      <!-- Number of Sets and Number of Reps labels -->
-      <label for="numSets3">Number of Sets</label>
-      <label for="numReps3">Number of Reps</label>
-      <!-- Number of Sets and Number of Reps inputs -->
-      <div class="num-container">
-        <input type="number" class="num" placeholder="0" min="0" id="numSets3">
-        <input type="number" class="num" placeholder="0" min="0" id="numReps3">
-      </div>
-    </div>
-    <!-- Exercise input textarea -->
-    <div class="exercise-input-textarea">
-      <!-- Description label -->
-      <label for="description3">Description</label>
-      <!-- Description textarea -->
-      <textarea class="description" placeholder="Describe how to do this exercise..." id="description3"></textarea>
-    </div>
-  </div>
-
-
-
-
-  <div class="exercise-input-top">
-    <!-- Exercise input picture -->
-    <div class="exercise-input-picture">
-      <img src="./../images/icon_edit.svg" alt="icon">
-    </div>
-    <!-- Exercise input inputs -->
-    <div class="exercise-input-inputs">
-      <div style="margin-bottom: 50px;">
-        <!-- Name input -->
-        <label for="exerciseName3">Name</label>
-        <input id="exerciseName4" type="text" list="myList" placeholder="Exercise Name" oninput="validateInput4(event)">
-        <datalist id="myList4">
-          <option value="Pull-ups"></option>
-          <option value="Deadlift (back)"></option>
-          <option value="Lat pull"></option>
-          <option value="Row-Machin"></option>
-          <option value="Rowing"></option>
-          <option value="Burpees"></option>
-          <option value="Plank"></option>
-          <option value="Russian Twists"></option>
-          <option value="Sit-Ups"></option>
-          <option value="Criss Cross"></option>
-          <option value="Bicep curls (dumbbells)"></option>
-          <option value="Bicep curls (SZ bar)"></option>
-          <option value="Bicep curls (cable)"></option>
-          <option value="Bicep-Machin"></option>
-          <option value="Hammer curls"></option>
-          <option value="Bench press"></option>
-          <option value="Butterfly"></option>
-          <option value="Chest press"></option>
-          <option value="Dips (chest)"></option>
-          <option value="Push-Up"></option>
-          <option value="Leg Press"></option>
-          <option value="Leg Extention"></option>
-          <option value="Squats"></option>
-          <option value="Hip Thrusts"></option>
-          <option value="Abductors"></option>
-          <option value="Shoulder Press"></option>
-          <option value="Lateral lift"></option>
-          <option value="Front lift"></option>
-          <option value="Butterfly reverse"></option>
-          <option value="Reverse Flys"></option>
-          <option value="Deadlift (torso)"></option>
-          <option value="Back extension"></option>
-          <option value="Torso tilt"></option>
-          <option value="Leg raise"></option>
-          <option value="Crunch bench"></option>
-          <option value="Tricep Press (cable)"></option>
-          <option value="Tricep Press (dumbbells)"></option>
-          <option value="French-Press"></option>
-          <option value="Dips (tricep)"></option>
-          <option value="Tricep-Machin"></option>
-        </datalist>
-        <script>
-          function validateInput4(event) {
-            var input = event.target;
-            var dataList = input.list;
-            var options = Array.from(dataList.options);
-
-            var inputValue = input.value.toLowerCase();
-            var isValid = options.some(function(option) {
-              return option.value.toLowerCase() === inputValue;
-            });
-
-            if (!isValid) {
-              input.setCustomValidity('Ungültige Eingabe');
-            } else {
-              input.setCustomValidity('');
-            }
-            input.reportValidity();
-          }
-        </script>
-      </div>
-      <!-- Number of Sets and Number of Reps labels -->
-      <label for="numSets4">Number of Sets</label>
-      <label for="numReps4">Number of Reps</label>
-      <!-- Number of Sets and Number of Reps inputs -->
-      <div class="num-container">
-        <input type="number" class="num" placeholder="0" min="0" id="numSets4">
-        <input type="number" class="num" placeholder="0" min="0" id="numReps4">
-      </div>
-    </div>
-    <!-- Exercise input textarea -->
-    <div class="exercise-input-textarea">
-      <!-- Description label -->
-      <label for="description4">Description</label>
-      <!-- Description textarea -->
-      <textarea class="description" placeholder="Describe how to do this exercise..." id="description4"></textarea>
-    </div>
-  </div>
-
-
-
-
-
-
-
-
-  <div class="exercise-input-top">
-    <!-- Exercise input picture -->
-    <div class="exercise-input-picture">
-      <img src="./../images/icon_edit.svg" alt="icon">
-    </div>
-    <!-- Exercise input inputs -->
-    <div class="exercise-input-inputs">
-      <div style="margin-bottom: 50px;">
-        <!-- Name input -->
-        <label for="exerciseName5">Name</label>
-        <input id="exerciseName5" type="text" list="myList" placeholder="Exercise Name" oninput="validateInput5(event)">
-        <datalist id="myList5">
-          <option value="Pull-ups"></option>
-          <option value="Deadlift (back)"></option>
-          <option value="Lat pull"></option>
-          <option value="Row-Machin"></option>
-          <option value="Rowing"></option>
-          <option value="Burpees"></option>
-          <option value="Plank"></option>
-          <option value="Russian Twists"></option>
-          <option value="Sit-Ups"></option>
-          <option value="Criss Cross"></option>
-          <option value="Bicep curls (dumbbells)"></option>
-          <option value="Bicep curls (SZ bar)"></option>
-          <option value="Bicep curls (cable)"></option>
-          <option value="Bicep-Machin"></option>
-          <option value="Hammer curls"></option>
-          <option value="Bench press"></option>
-          <option value="Butterfly"></option>
-          <option value="Chest press"></option>
-          <option value="Dips (chest)"></option>
-          <option value="Push-Up"></option>
-          <option value="Leg Press"></option>
-          <option value="Leg Extention"></option>
-          <option value="Squats"></option>
-          <option value="Hip Thrusts"></option>
-          <option value="Abductors"></option>
-          <option value="Shoulder Press"></option>
-          <option value="Lateral lift"></option>
-          <option value="Front lift"></option>
-          <option value="Butterfly reverse"></option>
-          <option value="Reverse Flys"></option>
-          <option value="Deadlift (torso)"></option>
-          <option value="Back extension"></option>
-          <option value="Torso tilt"></option>
-          <option value="Leg raise"></option>
-          <option value="Crunch bench"></option>
-          <option value="Tricep Press (cable)"></option>
-          <option value="Tricep Press (dumbbells)"></option>
-          <option value="French-Press"></option>
-          <option value="Dips (tricep)"></option>
-          <option value="Tricep-Machin"></option>
-        </datalist>
-        <script>
-          function validateInput5(event) {
-            var input = event.target;
-            var dataList = input.list;
-            var options = Array.from(dataList.options);
-
-            var inputValue = input.value.toLowerCase();
-            var isValid = options.some(function(option) {
-              return option.value.toLowerCase() === inputValue;
-            });
-
-            if (!isValid) {
-              input.setCustomValidity('Ungültige Eingabe');
-            } else {
-              input.setCustomValidity('');
-            }
-            input.reportValidity();
-          }
-        </script>
-      </div>
-      <!-- Number of Sets and Number of Reps labels -->
-      <label for="numSets5">Number of Sets</label>
-      <label for="numReps5">Number of Reps</label>
-      <!-- Number of Sets and Number of Reps inputs -->
-      <div class="num-container">
-        <input type="number" class="num" placeholder="0" min="0" id="numSets5">
-        <input type="number" class="num" placeholder="0" min="0" id="numReps5">
-      </div>
-    </div>
-    <!-- Exercise input textarea -->
-    <div class="exercise-input-textarea">
-      <!-- Description label -->
-      <label for="description5">Description</label>
-      <!-- Description textarea -->
-      <textarea class="description" placeholder="Describe how to do this exercise..." id="description5"></textarea>
-    </div>
-  </div>
-
-
-
-
-  <button class="post-trainingsplan" onclick="">
+  <button class="post-trainingsplan" onclick="checkInput();">
     Add
   </button>
 </main>

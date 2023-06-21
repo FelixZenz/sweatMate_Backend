@@ -23,6 +23,7 @@ public class PlanExerciseDB {
 
     public PlanExerciseDB() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
         planexerciseList = fillPlanExercises();
+        planDB.fillPlansWithTheirExercises(planexerciseList);
     }
 
     public static PlanExerciseDB getInstance() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
@@ -54,7 +55,10 @@ public class PlanExerciseDB {
         return planexerciseList;
     }
 
-    public List<PlanExercise> getPlanexercisesForSinglePlan (int planid){
+    public List<PlanExercise> getPlanexercisesForSinglePlan (int planid) {
+        return planDB.getPlanexercisesForPlan(planid);
+    }
+        /*
         List<PlanExercise> planEx = new ArrayList<>();
         for (PlanExercise exercise:planexerciseList) {
             if(exercise.getPlanId()==planid){
@@ -63,5 +67,6 @@ public class PlanExerciseDB {
         }
         return planEx;
     }
+    */
 
 }

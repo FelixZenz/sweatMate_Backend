@@ -32,101 +32,57 @@
     <div class="details-div-top">
       <div class="discover-container">
         <h2 id="detailsPlanName">Title</h2>
-        <h4>made by <span style="font-weight: bold;" id="detailsUsername">Username</span></h4>
+        <h4>made by <span style="font-weight: bold;" id="detailsUsername" >Username</span></h4>
+      </div>
+      <div class="like-dislike-container">
+        <img src="./../images/icon_like_inactive.svg" onclick="changeImageSrc(this, 'dislike');" alt="like" id="likeBtn">
+        <img src="./../images/icon_dislike_inactive.svg" onclick="changeImageSrc(this, 'like');" alt="dislike" id="dislikeBtn">
       </div>
     </div>
   </div>
-
   <div class="back-button-div">
     <a class="back-button" href="./discover.html">Go Back</a>
   </div>
-
-
-  <div class="exercise-output-top">
-    <div class="exercise-output-picture" id="picture1"></div>
-    <div class="exercise-output">
-      <div style="margin-bottom: 50px;">
-        <!-- Exercise Name -->
-        <h2 id="detailsExName1"></h2>
-        <div class="exercise-description">
-          <!-- Exercise Description -->
-          <p id="detailsExDes1">
-          </p>
-          <!-- Reps and Sets Information -->
-          <h5 id="detialsRepsSets1"></h5>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="exercise-output-top">
-    <div class="exercise-output-picture" id="picture2"></div>
-    <div class="exercise-output">
-      <div style="margin-bottom: 50px;">
-        <!-- Exercise Name -->
-        <h2 id="detailsExName2"></h2>
-        <div class="exercise-description">
-          <!-- Exercise Description -->
-          <p id="detailsExDes2">
-          </p>
-          <!-- Reps and Sets Information -->
-          <h5 id="detialsRepsSets2"></h5>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="exercise-output-top">
-    <div class="exercise-output-picture" id="picture3"></div>
-    <div class="exercise-output">
-      <div style="margin-bottom: 50px;">
-        <!-- Exercise Name -->
-        <h2 id="detailsExName3"></h2>
-        <div class="exercise-description">
-          <!-- Exercise Description -->
-          <p id="detailsExDes3">
-          </p>
-          <!-- Reps and Sets Information -->
-          <h5 id="detialsRepsSets3"></h5>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="exercise-output-top">
-    <div class="exercise-output-picture" id="picture4"></div>
-    <div class="exercise-output">
-      <div style="margin-bottom: 50px;">
-        <!-- Exercise Name -->
-        <h2 id="detailsExName4"></h2>
-        <div class="exercise-description">
-          <!-- Exercise Description -->
-          <p id="detailsExDes4">
-          </p>
-          <!-- Reps and Sets Information -->
-          <h5 id="detialsRepsSets4"></h5>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="exercise-output-top">
-    <div class="exercise-output-picture" id="picture5"></div>
-    <div class="exercise-output">
-      <div style="margin-bottom: 50px;">
-        <!-- Exercise Name -->
-        <h2 id="detailsExName5"></h2>
-        <div class="exercise-description">
-          <!-- Exercise Description -->
-          <p id="detailsExDes5">
-          </p>
-          <!-- Reps and Sets Information -->
-          <h5 id="detialsRepsSets5"></h5>
-        </div>
-      </div>
-    </div>
-  </div>
+  <div id="detailsOutput"></div>
 </main>
+<script>
+  var activeImage = null;
+
+  function changeImageSrc(image, toggleAlt) {
+    var images = document.getElementsByTagName('img');
+
+    var filteredImages = Array.from(images).filter(function(img) {
+      return img !== image && img.alt !== 'exclude';
+    });
+
+    var toggleImage = filteredImages.find(function(img) {
+      return img.alt === toggleAlt;
+    });
+
+    if (activeImage !== null && activeImage !== image) {
+      // Deactivate the previously active image
+      activeImage.src = activeImage.src.replace('_active.svg', '_inactive.svg');
+    }
+
+    if (image.src.endsWith('_inactive.svg')) {
+      // Activate the clicked image
+      image.src = image.src.replace('_inactive.svg', '_active.svg');
+      activeImage = image;
+      if (toggleImage) {
+        toggleImage.src = toggleImage.src.replace('_active.svg', '_inactive.svg');
+      }
+    } else {
+      // Deactivate the clicked image
+      image.src = image.src.replace('_active.svg', '_inactive.svg');
+      activeImage = null;
+    }
+    if (toggleAlt === 'dislike') {
+      ratePlan('like');
+    } else if (toggleAlt === 'like') {
+      ratePlan('dislike');
+    }
+  }
+</script>
 </body>
 
 </html>

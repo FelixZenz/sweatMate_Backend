@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Add Trainingsplan</title>
+  <meta name="description" content="SweatMate by Rannegger & Zenz">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="./../images/icon_sweatmate.svg">
+  <link rel="stylesheet" href="./../styles/styles.css">
+  <script src="../sample.js"></script>
+</head>
+
+<body onload="checkUser();">
+<main>
+  <nav class="navbar fixed-top">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <a href="./../index.html"><img src="./../images/logo_sweatmate.svg" alt="Logo"></a>
+      </div>
+      <ul class="navbar-links">
+        <li><a href="./../index.html">Home</a></li>
+        <li><a href="./discover.html" class="active">Discover</a></li>
+        <li><a href="./../about.html">About</a></li>
+        <li><a href="./../account/account.html"><img src="./../images/icon_login_inactive.svg" alt="Login"></a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div>
+    <div class="add-div-top">
+      <h2 id="tpNameH2">Add Trainingsplan</h2>
+    </div>
+
+    <div class="back-button-div">
+      <a class="back-button" href="./discover.html">Go Back</a>
+    </div>
+
+    <div style="margin-top: 25px;">
+      <label for="name-tp" class="name-tp-label">Name of Trainingsplan</label>
+      <input type="text" class="name-tp" placeholder="Name" id="name-tp">
+    </div>
+  </div>
+  <button class="post-trainingsplan" onclick="addPlan();">
+    Add
+  </button>
+
+</main>
+
+
+</body>
+
+</html>

@@ -49,36 +49,27 @@ public class PlanDB {
         return planList;
     }
 
+    public List<Plan> getSortedPlans(String criteria) {
+        List<Plan> plans = planList;
+        if (criteria.equals("best")) {
+            Collections.sort(plans, Comparator.comparingInt(Plan::getNumLikes).reversed().thenComparing(Plan::getNumDislikes));
+        } else {
+            Collections.sort(plans, Comparator.comparingInt(Plan::getNumDislikes).reversed().thenComparing(Plan::getNumLikes));
+        }
+        return plans;
+    }
+
     //Get ID for new Plan => getHighestID + 1 for the new TP
     public int getNewID() {
-        String sqlString = """
-                            SELECT MAX(planid) FROM plan;
-                            """;
-        Statement statement = null;
-        try {
-            statement = database.getStatement();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        int id = -1; // Initialisieren Sie die höchste Plan-ID mit einem negativen Wert
+        for (Plan plan : planList) {
+            int currentPlanId = plan.getPlanid();
+            if (currentPlanId > id) {
+                id = currentPlanId;
+            }
         }
-        ResultSet resultSet = null;
-        try {
-            resultSet = statement.executeQuery(sqlString);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            resultSet.next();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        int id = 0;
-        try {
-            id = resultSet.getInt("max");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        database.releaseStatement(statement);
-        return id+1;
+        return id +1;
+
     }
 
     //check if the inserted exercise is a real exercise
@@ -152,6 +143,18 @@ public class PlanDB {
         }
     }
 
+    public void deletePlanFromDB(int id){
+        try {
+            String sqlStringForPE = """ 
+                            DELETE FROM planexercise WHERE "planId" = """ + id + ";";
+            String sqlString = "DELETE FROM plan WHERE planid = " + id + ";";
+            database.getStatement().execute(sqlStringForPE);
+            database.getStatement().execute(sqlString);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Plan> getPlansFromUser(String username){
         List<Plan> plans = new ArrayList<>();
         for (Plan plan:planList) {
@@ -160,5 +163,56 @@ public class PlanDB {
             }
         }
         return plans;
+    }
+
+    public void addPlan(Plan plan){
+        if(!planList.contains(plan)){
+            planList.add(plan);
+        }
+    }
+
+    public void insertExerciseToPlan(PlanExercise planExercise){
+        int id = planExercise.getPlanId();
+        for (Plan plan : planList){
+            if(plan.getPlanid()==id){
+                plan.addPlanExercise(planExercise);
+                planList.remove(plan);
+                planList.add(plan);
+            }
+        }
+        try {
+            //INSERT INTO planexercise VALUES (1, 2, 3, 4, "details");
+            String sqlString = "INSERT INTO planexercise VALUES (" + planExercise.getPlanId()
+                    + ", " + planExercise.getExerciseId() + ", " + planExercise.getNum_sets()
+                    + ", " + planExercise.getNum_reps() + ", '" + planExercise.getDetails() + "');";
+            database.getStatement().execute(sqlString);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<PlanExercise> getPlanexercisesForPlan(int id){
+        List<PlanExercise> planExerciseList = new ArrayList<>();
+        for (Plan plan : planList){
+            if (plan.getPlanid() == id){
+                planExerciseList = plan.getExercieceList();
+            }
+        }
+        return planExerciseList;
+    }
+
+    public void fillPlansWithTheirExercises(List<PlanExercise> planExercises){
+        List<Plan> plans = new ArrayList<>();
+        for (Plan plan : planList){
+            for (PlanExercise planExercise:planExercises) {
+                if(plan.getPlanid() == planExercise.getPlanId()){
+                    if(!plans.contains(plan)){
+                        plans.add(plan);
+                    }
+                    plan.addPlanExercise(planExercise);
+                }
+            }
+        }
+        planList = plans;
     }
 }

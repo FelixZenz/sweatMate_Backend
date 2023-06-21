@@ -58,95 +58,17 @@
   <div class="discover-functions">
     <div class="discover-left-items">
       <!-- Add Button -->
-      <a href="./add.html">
+      <a href="addplan.html">
         <button class="add-button">+ Add</button>
       </a>
+    <div style="margin-top: -42px;margin-left: 118px;">
+       <img src="../images/arrow-up.png" onclick="sort('best');" style="width: 50px; height: auto;">
 
-      <!-- Search Bar -->
-      <input class="search-bar" type="search" placeholder="Search...">
+        <img src="../images/down-arrow.png" onclick="sort('worst');" style="width: 50px; height: auto;">
+    </div>
     </div>
   </div>
-
-  <!--
-  <div class="card-grid">
-    <div class="card">
-      <div class="card-upper">
-        <img src="./../images/img_card.svg" alt="card">
-      </div>
-
-      <div class="card-lower">
-        <h2>Title</h2>
-
-        <p class="subtitle">Username</p>
-
-        <div class="card-lower-part">
-          <div class="card-likes-container">
-            <a>
-              <img
-                src="./../images/icon_like_inactive.svg"
-                id="like"
-                onclick="changeImageSrc(this)"
-                alt="icon">
-            </a>
-
-            <a>
-              <img
-                src="./../images/icon_dislike_inactive.svg"
-                id="dislike"
-                onclick="changeImageSrc(this)"
-                alt="icon">
-            </a>
-          </div>
-
-          <div>
-            <a class="card-link" href="./details.html">Learn more</a>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-upper">
-        <img src="./../images/img_card.svg" alt="card">
-      </div>
-
-
-      <div class="card-lower">
-
-        <h2>Title</h2>
-
-
-        <p class="subtitle">Username</p>
-
-
-        <div class="card-lower-part">
-
-          <div class="card-likes-container">
-
-            <a>
-              <img
-                src="./../images/icon_like_inactive.svg"
-                alt="icon">
-            </a>
-
-
-            <a>
-              <img
-                src="./../images/icon_dislike_inactive.svg"
-                alt="icon">
-            </a>
-          </div>
-
-
-          <div>
-            <a class="card-link" href="./details.html">Learn more</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  -->
-  <table class="account-trainings-plans-table" id="allPlansTable"></table>
+  <div class="card-grid" id="cardOutput"></div>
 </main>
 </body>
 

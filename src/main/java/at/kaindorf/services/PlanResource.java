@@ -39,12 +39,20 @@ public class PlanResource {
         return Response.ok(planList).build();
     }
 
+    @GET
+    @Path("/all/{criteria}")
+    public Response getSortedPlans(@PathParam("criteria") String criteria){
+        List<Plan> planList = new ArrayList<>();
+        planList = planDB.getSortedPlans(criteria);
+        return Response.ok(planList).build();
+    }
+
     //getExercises for Plan
     @GET
     @Path("/{planId}")
     public Response getExercisesForPlan(@PathParam("planId") int planId){
         List<PlanExercise> planExercises = new ArrayList<>();
-        planExercises = planExerciseDB.getPlanexercisesForSinglePlan(planId);
+        planExercises = planDB.getPlanexercisesForPlan(planId);
         return Response.ok(planExercises).build();
     }
 
@@ -59,26 +67,28 @@ public class PlanResource {
 
     //insert new Plan (only planname with creator)
     @PUT
-    @Path("/{planname}")
+    @Path("/{planname}/{creator}")
     @JWTNeeded
-    public Response insertPlan(@PathParam("planname") String planname){
-        String username = crc.getProperty("username").toString();
+    public Response insertPlan(@PathParam("planname") String planname, @PathParam("creator") String creator){
+        //String username = crc.getProperty("username").toString();
         int id = planDB.getNewID();
-        Plan plan = new Plan(id, planname, username);
-        Optional<Object> planOptional = access.insertObject(plan);
-        return Response.accepted(planOptional.get()).build();
+        Plan plan = new Plan(id, planname, creator);
+        access.insertObject(plan);
+        planDB.addPlan(plan);
+        return Response.accepted(plan).build();
     }
 
     //insert exercise to a plan
     @PUT
-    @JWTNeeded
+    @Path("/pe")
+    //@JWTNeeded
     public Response addExercises(PlanExercise planExercise){
         System.out.println("########\n\n\n" + planExercise + "#####\n\n\n");
         try{
             Plan plan = planDB.getPlanByID(planExercise.getPlanId());
             System.out.println("#!#" + plan);
-            plan.addPlanExercise(planExercise);
-            access.insertObject(planExercise);
+           // plan.addPlanExercise(planExercise);
+            planDB.insertExerciseToPlan(planExercise);
             if(plan == null){
                 throw new RuntimeException("Plan not found!");
             }
@@ -98,16 +108,13 @@ public class PlanResource {
     }
 
     //
-    @JWTNeeded
     @DELETE
     @Path("/{planid}")
     public Response deletePlan(@PathParam("planid") int planId){
         try{
             Plan plan = planDB.getPlanByID(planId);
             planDB.deletePlan(plan);
-            if(plan == null){
-                throw new RuntimeException("[!] Plan not found!");
-            }
+            planDB.deletePlanFromDB(planId);
             return Response.ok(plan).build();
         }
         catch (RuntimeException e){
