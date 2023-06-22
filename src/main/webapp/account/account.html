@@ -30,7 +30,7 @@
       <div class="flex-container">
         <div>
           <!-- Account picture -->
-          <img src="./../images/icon_account.svg" class="account-picture" alt="icon">
+          <img src="./../images/icon_account.svg" class="account-picture" alt="icon" onclick="showPwPopup()">
         </div>
         <div>
           <!-- Username -->
@@ -75,6 +75,221 @@
       </div>
     </div>
   </div>
+
+
+  <div id="pw-overlay" class="popup-overlay" onclick="hidePwPopup()"></div>
+  <div id="pw-popup" class="pw-popup-content">
+    <div>
+      <h1 style="text-align: center">Password</h1>
+      <div class="group">
+        <!-- Password input field -->
+        <input type="text" id="passwordForVerification" onclick="togglePasswordVisibility('passwordForVerification');" required>
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>Password</label>
+      </div>
+    </div>
+
+    <div>
+      <!-- "Next" button -->
+      <a>
+        <input class="button-primary" type="button" value="Next" onclick="hidePwPopup();">
+      </a>
+    </div>
+  </div>
+
+  <div id="overlay" class="popup-overlay" onclick="hideEditPopup()"></div>
+  <div id="popup" class="edit-popup-content">
+    <div>
+      <h1 style="text-align: center">Account Settings</h1>
+      <div class="group">
+        <!-- Firstname field -->
+        <input type="text" value="test" id="firstnameForUpdate">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>Firstname</label>
+      </div>
+      <div class="group">
+        <!-- Lastname field -->
+        <input type="text" value="test" id="lastnameForUpdate">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>Lastname</label>
+      </div>
+      <div class="group">
+        <!-- Email field -->
+        <input type="text" value="test" id="emailForUpdate">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>Email</label>
+        <div class="group">
+          <!-- Password input field -->
+          <input type="text" id="passwordForUpdate" onclick="togglePasswordVisibility('passwordForUpdate');" required>
+          <span class="highlight"></span>
+          <span class="bar"></span>
+          <label>Password</label>
+        </div>
+      </div>
+
+      <div>
+        <!-- "Save" button -->
+        <a>
+          <input class="button-primary" type="button" value="Save" onclick="saveNewDetails();">
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="snackbar green">Account updated</div>
+  <div class="snackbar red">Invalid Input</div>
+
+
 </main>
+<script>
+
+  async function saveNewDetails(){
+    console.log("SAVE");
+    let username = getCookie("us");
+    let jwt = getCookie("jwt");
+    let firstname = document.getElementById("firstnameForUpdate").value;
+    let lastname = document.getElementById("lastnameForUpdate").value;
+    let email = document.getElementById("emailForUpdate").value;
+    let pwd = document.getElementById("passwordForUpdate").value;
+    if(firstname == "" || lastname == "" || email == "" || pwd == ""){
+      showSnackbar('red');
+      setTimeout(() => {window.location.href = "account.html"; }, 1000);
+    }
+    else{
+
+
+    try {
+      const user = {
+        username: username,
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        password: pwd
+      }
+      const init = {
+        method: 'PUT',
+        headers: {
+          'Authorization': jwt,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+      }
+      let url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/login/upd'
+      let response = await fetch(url, init);
+      console.log(response);
+      if (!response.ok) {
+        // alert("Invalid Login Data");
+        throw Error("HTTP-error: " + response.status);
+        //window.location = "account.html";
+      }
+      else {
+        showSnackbar('green');
+        setTimeout(() => {window.location.href = "account.html"; }, 1000);
+      }
+    } catch (e){
+      showSnackbar('red');
+      setTimeout(() => {window.location.href = "account.html"; }, 1000);
+    }
+    }
+
+  }
+
+  function hideEditPopup() {
+    var overlay = document.getElementById("overlay");
+    var popup = document.getElementById("popup");
+
+    overlay.style.display = "none";
+    popup.style.display = "none";
+  }
+
+  async function hidePwPopup() {
+    var overlay = document.getElementById("pw-overlay");
+    var popup = document.getElementById("pw-popup");
+
+    overlay.style.display = "none";
+    popup.style.display = "none";
+    let password = document.getElementById("passwordForVerification").value;
+    console.log(password);
+    //Password verification
+    let user = getCookie("us");
+    let jwt = getCookie("jwt");
+    if(!user || !jwt){
+      //alert("You have to log into your account, if you want to use this Feature!");
+      //window.location.href = "discover.html";
+      showSnackbar('red');
+      setTimeout(() => {window.location.href = "account.html"; }, 1000);
+    }
+    else{
+      //us/name/pwd
+      const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/login/us/'+user+'/'+password;
+      const init = {
+        method: 'GET',
+        headers: {
+          'Authorization': jwt,
+        }
+      }
+      try {
+        let response = await fetch(url, init);
+        if (!response.ok) {
+          //console.log("GET LIKED PLAN FAILED");
+          showSnackbar('red');
+          setTimeout(() => {window.location.href = "account.html"; }, 1000);
+          throw Error("HTTP-error: " + response.status);
+        } else {
+          //let result = await response.json();
+          console.log(response);
+          //displayPlans(result);
+          showEditPopup();
+        }
+      } catch (e) {
+        console.log(e.toString());
+      }
+    }
+  }
+
+  async function showEditPopup() {
+    var overlay = document.getElementById("overlay");
+    var popup = document.getElementById("popup");
+
+    overlay.style.display = "block";
+    popup.style.display = "block";
+
+    let username = getCookie("us");
+    //console.log(username);
+    const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/login/' + username;
+    try {
+      let response = await fetch(url);
+      if (!response.ok) {
+        console.log("get user details");
+        throw Error("HTTP-error: " + response.status);
+      } else {
+        let result = await response.json();
+        console.log(result);
+        document.getElementById("firstnameForUpdate").value = result.firstname;
+        document.getElementById("lastnameForUpdate").value = result.lastname;
+        document.getElementById("emailForUpdate").value = result.email;
+        document.getElementById("passwordForUpdate").value = result.password;
+      }
+    } catch (e) {
+      console.log(e.toString());
+      console.log("user details failed");
+    }
+
+  }
+
+  function showPwPopup() {
+    var overlay = document.getElementById("pw-overlay");
+    var popup = document.getElementById("pw-popup");
+
+    overlay.style.display = "block";
+    popup.style.display = "block";
+    console.log("CLICKED")
+    document.getElementById("passwordForVerification").value = "";
+  }
+</script>
 </body>
 </html>

@@ -32,7 +32,7 @@
     <div class="details-div-top">
       <div class="discover-container">
         <h2 id="detailsPlanName">Title</h2>
-        <h4>made by <span style="font-weight: bold;" id="detailsUsername" >Username</span></h4>
+        <h4>made by <span style="font-weight: bold; text-decoration: underline; cursor: pointer" onclick="showPopup()" id="detailsUsername">Username</span></h4>
       </div>
       <div class="like-dislike-container">
         <img src="./../images/icon_like_inactive.svg" onclick="changeImageSrc(this, 'dislike');" alt="like" id="likeBtn">
@@ -44,6 +44,45 @@
     <a class="back-button" href="./discover.html">Go Back</a>
   </div>
   <div id="detailsOutput"></div>
+
+
+  <div id="overlay" class="popup-overlay" onclick="hidePopup()"></div>
+  <div id="popup" class="popup-content">
+    <div>
+      <h1 style="text-align: center" id="popupUsername">Details of test</h1>
+      <div class="group">
+        <!-- Firstname field -->
+        <input type="text" class="not-clickable" id="popupFirstname">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>Firstname</label>
+      </div>
+      <div class="group">
+        <!-- Lastname field -->
+        <input type="text" class="not-clickable" id="popupLastname">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>Lastname</label>
+      </div>
+      <div class="group">
+        <!-- Email field -->
+        <input type="text" class="not-clickable" id="popupEmail">
+        <span class="highlight"></span>
+        <span class="bar"></span>
+        <label>Email</label>
+      </div>
+
+      <div>
+        <!-- "Close" button -->
+        <a href="">
+          <input class="button-primary" type="button" value="Close">
+        </a>
+      </div>
+    </div>
+  </div>
+
+    <div class="snackbar green">Account created</div>
+    <div class="snackbar red">Log in to use this feature</div>
 </main>
 <script>
   var activeImage = null;
@@ -82,6 +121,51 @@
       ratePlan('dislike');
     }
   }
+
+  async function showPopup() {
+    var overlay = document.getElementById("overlay");
+    var popup = document.getElementById("popup");
+
+    let username = getURLParameter("unm");
+    //console.log(username);
+    const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/login/' + username;
+    try {
+      let response = await fetch(url);
+      if (!response.ok) {
+        console.log("get user details");
+        throw Error("HTTP-error: " + res.status);
+      } else {
+        let result = await response.json();
+        console.log(result);
+        document.getElementById("popupUsername").innerHTML = "About " + result.username;
+        document.getElementById("popupFirstname").value = result.firstname;
+        document.getElementById("popupLastname").value = result.lastname;
+        document.getElementById("popupEmail").value = result.email;
+      }
+    } catch (e) {
+      console.log(e.toString());
+      console.log("user details failed");
+    }
+    overlay.style.display = "block";
+    popup.style.display = "block";
+  }
+
+  function hidePopup() {
+    var overlay = document.getElementById("overlay");
+    var popup = document.getElementById("popup");
+
+    overlay.style.display = "none";
+    popup.style.display = "none";
+  }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    var inputFields = document.querySelectorAll('.not-clickable');
+    inputFields.forEach(function(inputField) {
+      inputField.addEventListener('mousedown', function(event) {
+        event.preventDefault();
+      });
+    });
+  });
 </script>
 </body>
 

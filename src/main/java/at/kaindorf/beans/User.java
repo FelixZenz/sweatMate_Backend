@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+//Klasse für die User
 public class User {
     @Id
     private String username;

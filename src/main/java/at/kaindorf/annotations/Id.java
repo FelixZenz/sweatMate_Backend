@@ -7,5 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+//Um die ID zu kennzeichnen (insert into)
 public @interface Id {
 }

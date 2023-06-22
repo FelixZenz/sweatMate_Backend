@@ -7,5 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+//um Werte zu "ignorieren"
 public @interface Transient {
 }

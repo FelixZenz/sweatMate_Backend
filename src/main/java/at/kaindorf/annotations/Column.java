@@ -7,6 +7,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
+//um beim gewissen Spalten die richtige Namensgebung zu gewährleisten
 public @interface Column {
     String name() default "";
 }

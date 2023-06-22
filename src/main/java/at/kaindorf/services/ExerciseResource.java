@@ -15,10 +15,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+//All Requests for exercise
 @Path("/exercise")
 public class ExerciseResource {
 
-    private DB_Access access = DB_Access.getInstance();
     private ExerciseDB exerciseDB = ExerciseDB.getInstance();
 
     public ExerciseResource() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
@@ -26,7 +26,7 @@ public class ExerciseResource {
 
     //to receive all exercises
     @GET
-    public Response getAllExercises(){
+    public Response getAllExercises() {
         try {
             List<Exercise> exerciseList = exerciseDB.loadAllExercises();
             return Response.ok(exerciseList).build();
@@ -40,7 +40,7 @@ public class ExerciseResource {
     //getExerciseByID
     @GET
     @Path("/{exerciseid}")
-    public Response getExercisesForPlan(@PathParam("exerciseid") int exerciseid){
+    public Response getExercisesForPlan(@PathParam("exerciseid") int exerciseid) {
         Exercise exercise = new Exercise();
         exercise = exerciseDB.findExerciseById(exerciseid);
         return Response.ok(exercise).build();

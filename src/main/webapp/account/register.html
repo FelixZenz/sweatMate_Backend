@@ -20,7 +20,7 @@
         <li><a href="./../index.html">Home</a></li>
         <li><a href="./../discover/discover.html">Discover</a></li>
         <li><a href="./../about.html">About</a></li>
-        <li><a href="/"><img src="./../images/icon_login_active.svg" alt="Login"></a></li>
+        <li><a href="./login.html"><img src="./../images/icon_login_active.svg" alt="Login"></a></li>
       </ul>
     </div>
   </nav>
@@ -33,77 +33,64 @@
     <h1>Create Account</h1>
     <h4>We are glad that you want to join us!</h4>
     <div>
-      <form>
         <div class="group">
           <!-- Username input field -->
-          <input type="text" id="newUserUsername" onblur="validateInput()" required>
+          <input type="text" id="newUserUsername" onblur="validateInput()">
           <p id="fehlermeldung" style="color: darkred"></p>
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Username</label>
         </div>
 
-        <script>
-          async function validateInput() {
-            let url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/login';
-            let response = await fetch(url);
-            let vals = await response.json();
-            var input = document.getElementById("newUserUsername").value;
-            var fehlermeldung = document.getElementById("fehlermeldung");
-            if (vals.includes(input)) {
-              fehlermeldung.textContent = "Username already in use";
-              document.getElementById("newUserUsername").value = ""; // Zurücksetzen des Eingabefelds
-            } else {
-              fehlermeldung.textContent = "";
-            }
-          }
-        </script>
+
         <div class="group">
           <!-- Firstname input field -->
-          <input type="text" id="newUserFirstname" required>
+          <input type="text" id="newUserFirstname">
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Firstname</label>
         </div>
         <div class="group">
           <!-- Lastname input field -->
-          <input type="text" id="newUserLastname" required>
+          <input type="text" id="newUserLastname">
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Lastname</label>
         </div>
         <div class="group">
           <!-- Email input field -->
-          <input type="text" id="newUserMail" required>
+          <input type="text" id="newUserMail">
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Email</label>
         </div>
         <div class="group">
           <!-- Password input field -->
-          <input type="password" id="newUserPwd" required>
+          <input type="text" id="newUserPwd" onclick="togglePasswordVisibility('newUserPwd');">
           <span class="highlight"></span>
           <span class="bar"></span>
           <label>Password</label>
         </div>
+
         <div class="cb-flex-container">
           <div class="cbx">
-            <!-- Checkbox -->
             <input id="cbx" type="checkbox">
             <label for="cbx"></label>
           </div>
+
           <div>
-            <!-- Checkbox label -->
+             <!--Checkbox label-->
             <p class="cbLabel">I agree to the <span style="text-decoration: underline">Terms of Service</span> *</p>
           </div>
+
         </div>
-      </form>
-    </div>
-    <div>
-      <!-- "Create Account" button -->
-      <a>
-        <input class="button-primary" type="button" value="Create Account" onclick="insertNewUser(newUserUsername.value, newUserFirstname.value, newUserLastname.value, newUserMail.value, newUserPwd.value)">
-      </a>
+
+        <div>
+          <!-- "Create Account" button -->
+          <a>
+            <button class="button-primary" onclick="insertNewUser(newUserUsername.value, newUserFirstname.value, newUserLastname.value, newUserMail.value, newUserPwd.value)">Create Account</button>
+          </a>
+        </div>
     </div>
     <div>
       <!-- "Already have an account?" button -->
@@ -112,6 +99,26 @@
       </a>
     </div>
   </div>
+
+
+  <div class="snackbar green">Account created</div>
+  <div class="snackbar red">Failed to create account</div>
+
 </main>
+<script>
+  async function validateInput() {
+    let url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/login';
+    let response = await fetch(url);
+    let vals = await response.json();
+    var input = document.getElementById("newUserUsername").value;
+    var fehlermeldung = document.getElementById("fehlermeldung");
+    if (vals.includes(input)) {
+      fehlermeldung.textContent = "Username already in use";
+      document.getElementById("newUserUsername").value = ""; // Zurücksetzen des Eingabefelds
+    } else {
+      fehlermeldung.textContent = "";
+    }
+  }
+</script>
 </body>
 </html>

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+//Klasse für die Datenbankverbindungen speziell für die Tabelle Exercise
+// --> auch andere Exercise Funktionen, neben den DB Funktionen, werden hier behandelt
 public class ExerciseDB {
     private DB_Access db_access = DB_Access.getInstance();
     private DB_Database database = DB_Database.getInstance();
@@ -23,19 +25,17 @@ public class ExerciseDB {
 
     public ExerciseDB() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
         exerciseList = loadAllExercises();
-        //fillDBwithExercises(exerciseList);
+        //fillDBwithExercises(exerciseList);  --> einmalig ausgeführt, um die Exercises von der CSV in die DB zu spielen
     }
 
     public static ExerciseDB getInstance() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
-        if(instance == null){
+        if (instance == null) {
             instance = new ExerciseDB();
         }
         return instance;
     }
 
-    //get all exercises from file
     public List<Exercise> loadAllExercises() throws IOException, URISyntaxException {
-        //Path filepath = Path.of(System.getProperty("user.dir"), "src", "main", "resources", "exercises.csv");
         URL url = ExerciseDB.class.getClassLoader().getResource("exercises.csv");
         return Files.readAllLines(Path.of(url.toURI()))
                 .stream()
@@ -45,36 +45,18 @@ public class ExerciseDB {
     }
 
     //get single exercise by id
-    public Exercise findExerciseById(int id){
+    public Exercise findExerciseById(int id) {
         return exerciseList.stream().filter(e -> e.getExerciseID() == id)
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }
 
 
-    public void fillDBwithExercises(List<Exercise> exercises){
-        for (Exercise e: exerciseList) {
+    //einmalig ausgeführt
+    public void fillDBwithExercises(List<Exercise> exercises) {
+        for (Exercise e : exerciseList) {
             db_access.insertObject(e);
         }
     }
-
-
-    //only testing purpose
-
-    public static void main(String[] args) {
-        try {
-            ExerciseDB exerciseDB = ExerciseDB.getInstance();
-            System.out.println(exerciseDB.loadAllExercises());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
 
 }

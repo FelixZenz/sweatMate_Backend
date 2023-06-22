@@ -11,6 +11,7 @@ import java.util.Arrays;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+//Klasse für Exercise
 public class Exercise {
     @Column(name = "exerciseid")
     private int exerciseID;

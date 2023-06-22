@@ -10,37 +10,8 @@
   <script src="../sample.js"></script>
 </head>
 
-<script>
-  function changeImageSrc(element) {
-    var like = document.getElementById('like');
-    var dislike = document.getElementById('dislike');
-
-    <!-- Like pressed -->
-    if (element.id === 'like' && like.src !== './../images/icon_like_active.svg') {
-      dislike.src = './../images/icon_dislike_inactive.svg';
-      like.src = './../images/icon_like_active.svg';
-    }
-    <!-- Like pressed [like active]-->
-    else if (element.id === 'like' && like.src === './../images/icon_like_active.svg') {
-      dislike.src = './../images/icon_dislike_inactive.svg';
-      like.src = './../images/icon_like_inactive.svg';
-    }
-    <!-- Dislike pressed -->
-    else if (element.id === 'dislike' && dislike.src !== './../images/icon_dislike_active.svg') {
-      like.src = './../images/icon_like_inactive.svg';
-      dislike.src = './../images/icon_dislike_active.svg';
-    }
-    <!-- Dislike pressed [dislike active]-->
-    else if (element.id === 'dislike' && dislike.src === './../images/icon_dislike_active.svg') {
-      like.src = './../images/icon_like_inactive.svg';
-      dislike.src = './../images/icon_dislike_inactive.svg';
-    }
-  }
-</script>
-
 <body onload="getPlans();">
 <main>
-  <!-- Navigation -->
   <nav class="navbar fixed-top">
     <div class="navbar-container">
       <div class="navbar-brand">
@@ -58,17 +29,92 @@
   <div class="discover-functions">
     <div class="discover-left-items">
       <!-- Add Button -->
-      <a href="addplan.html">
+      <a  href="addplan.html">
         <button class="add-button">+ Add</button>
       </a>
-    <div style="margin-top: -42px;margin-left: 118px;">
-       <img src="../images/arrow-up.png" onclick="sort('best');" style="width: 50px; height: auto;">
 
-        <img src="../images/down-arrow.png" onclick="sort('worst');" style="width: 50px; height: auto;">
+      <button id="liked" class="toggle-button" onclick="toggleButton()">Liked</button>
     </div>
+    <div class="discover-right-items">
+      <button id="sort-button" onclick="changeSortIcon()">
+        <img id="sort-icon" src="./../images/icon_sort_down.svg" alt="Sort">
+      </button>
     </div>
   </div>
+
   <div class="card-grid" id="cardOutput"></div>
+  <div class="snackbar green">Account created</div>
+  <div class="snackbar red">Log in to use this feature</div>
+
+  <script>
+    async function toggleButton() {
+      var button = document.getElementById('liked');
+      button.classList.toggle('active');
+
+      if (button.classList.contains('active')) {
+        <!-- Filter aufrufen -->
+        console.log("aktive");
+        let user = getCookie("us");
+        let jwt = getCookie("jwt");
+        if(!user || !jwt){
+          //alert("You have to log into your account, if you want to use this Feature!");
+          //window.location.href = "discover.html";
+          showSnackbar('red');
+          setTimeout(() => {window.location.href = "discover.html"; }, 2000);
+        }
+        else{
+          ///liked/{username}
+          const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/plan/liked/' + user;
+          const init = {
+            method: 'GET',
+            headers: {
+              'Authorization': jwt
+            }
+          }
+          try {
+            let response = await fetch(url, init);
+            if (!response.ok) {
+              console.log("GET LIKED PLAN FAILED");
+              throw Error("HTTP-error: " + res.status);
+            } else {
+              let result = await response.json();
+              console.log(result);
+              displayPlans(result);
+            }
+          } catch (e) {
+            console.log(e.toString());
+            console.log("get liked plans");
+          }
+        }
+      }
+      else{
+        console.log("inaktive");
+        getPlans();
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+      var button = document.getElementById('sort-button');
+      button.addEventListener('click', function() {
+        this.classList.toggle('active');
+      });
+    });
+
+    function changeSortIcon() {
+      var sortIcon = document.getElementById('sort-icon');
+
+      if (sortIcon.getAttribute('src') === './../images/icon_sort_down.svg') {
+        sortIcon.setAttribute('src', './../images/icon_sort_up.svg');
+        <!-- Aufsteigend sortieren -->
+        sort('best');
+      } else {
+        sortIcon.setAttribute('src', './../images/icon_sort_down.svg');
+        <!-- Absteigend sortieren -->
+        sort('worst');
+      }
+    }
+
+  </script>
 </main>
 </body>
 

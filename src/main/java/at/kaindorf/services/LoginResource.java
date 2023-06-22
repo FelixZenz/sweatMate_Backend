@@ -4,6 +4,7 @@ import at.kaindorf.beans.LoginData;
 import at.kaindorf.beans.User;
 import at.kaindorf.db.DB_Access;
 import at.kaindorf.db.UserDB;
+import at.kaindorf.jwt.JWTNeeded;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import jakarta.ws.rs.*;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+//All Requests for User
 @Path("/login")
 public class LoginResource {
     private UserDB userDB = UserDB.getInstance();
@@ -54,11 +56,43 @@ public class LoginResource {
         return Response.accepted(userOptional.get()).build();
     }
 
+    //get All Usernames
     @GET
     public Response getAllUsernames(){
         List<String> usernames = userDB.getAllUsernames();
         return Response.ok(usernames).build();
     }
 
+    //get User by its Username
+    @GET
+    @Path("/{username}")
+    public Response getUserByUsername(@PathParam("username") String username){
+        User user = userDB.getUserByUsername(username);
+        return Response.ok(user).build();
+    }
+
+    //check the password
+    @GET
+    @Path("/us/{username}/{pwd}")
+    @JWTNeeded
+    public Response checkPassword(@PathParam("username") String username, @PathParam("pwd") String pwd){
+        if(userDB.checkUserPWD(username, pwd)){
+            return Response.accepted().build();
+        }
+        return Response.status(Response.Status.CONFLICT).build();
+    }
+
+    //update User
+    @PUT
+    @Path("/upd")
+    @JWTNeeded
+    public Response updateUser(User user){
+        try {
+            userDB.updateUser(user);
+        } catch (NoSuchElementException e){
+            return Response.status(Response.Status.UNAUTHORIZED).entity(e).build();
+        }
+        return Response.accepted().build();
+    }
 
 }

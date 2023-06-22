@@ -83,12 +83,12 @@
     </div>
 
     <div class="back-button-div">
-      <a class="back-button" href="./discover.html">Go Back</a>
+     <a class="back-button" onclick="finish();" id="goBackText" style="visibility: hidden;">Go Back</a>
       <button class="post-trainingsplan" style="visibility: hidden;" onclick="finish();" id="finishBtn">
         Finish
       </button>
     </div>
-
+  </div>
   <div id="outputAlreadyAddedExercises" style="opacity: 0.5">
 
   </div>
@@ -146,43 +146,6 @@
           <option value="Dips (tricep)"></option>
           <option value="Tricep-Machin"></option>
         </datalist>
-        <script>
-          let image;
-          async function validateInput(event) {
-            var input = event.target;
-            var dataList = input.list;
-            var options = Array.from(dataList.options);
-
-            var inputValue = input.value;
-            var isValid = options.some(function(option) {
-              return option.value === inputValue;
-            });
-
-            if (!isValid) {
-              input.setCustomValidity('Invalid Input');
-            } else {
-              await setImageForAddPlan(inputValue);
-              console.log(image);
-              document.getElementById("addImg1").innerHTML = `<img src="./../images/${image}" alt="icon">`;
-              input.setCustomValidity('');
-            }
-
-            input.reportValidity();
-          }
-
-          async function setImageForAddPlan(value){
-            const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/exercise';
-            let response = await fetch(url);
-            let result = await response.json();
-            for(elem of result){
-             //console.log(elem);
-              if(elem.exerciseName === value){
-                image = elem.image;
-                return image;
-              }
-            }
-          }
-        </script>
       </div>
       <!-- Number of Sets and Number of Reps labels -->
       <label for="numSets1">Number of Sets</label>
@@ -201,15 +164,53 @@
       <textarea class="description" placeholder="Describe how to do this exercise..." id="description1"></textarea>
     </div>
   </div>
-
-
-
-
-
   <button class="post-trainingsplan" onclick="checkInput();">
     Add
   </button>
+
+  <div class="snackbar green">Exercise added</div>
+  <div class="snackbar red">Invalid input</div>
+
+    <script>
+      let image;
+      async function validateInput(event) {
+        var input = event.target;
+        var dataList = input.list;
+        var options = Array.from(dataList.options);
+
+        var inputValue = input.value;
+        var isValid = options.some(function(option) {
+          return option.value === inputValue;
+        });
+
+        if (!isValid) {
+          input.setCustomValidity('Invalid Input');
+        } else {
+          await setImageForAddPlan(inputValue);
+          console.log(image);
+          document.getElementById("addImg1").innerHTML = `<img src="./../images/${image}" alt="icon">`;
+          input.setCustomValidity('');
+        }
+
+        input.reportValidity();
+      }
+
+      async function setImageForAddPlan(value){
+        const url = 'http://localhost:8080/sweatMate_TestProject-1.0-SNAPSHOT/api/exercise';
+        let response = await fetch(url);
+        let result = await response.json();
+        for(elem of result){
+          //console.log(elem);
+          if(elem.exerciseName === value){
+            image = elem.image;
+            return image;
+          }
+        }
+      }
+    </script>
+
 </main>
+
 </body>
 
 </html>

@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.*;
 
+//Klasse für die Datenbankverbindungen speziell für die Tabelle LikedPlan
+// --> auch andere LikedPlan Funktionen, neben den DB Funktionen, werden hier behandelt
 public class PlanDB {
     private DB_Access db_access = DB_Access.getInstance();
     private DB_Database database = DB_Database.getInstance();
@@ -21,7 +23,7 @@ public class PlanDB {
     }
 
     public static PlanDB getInstance() throws SQLException, ClassNotFoundException, IOException, URISyntaxException {
-        if(instance == null){
+        if (instance == null) {
             instance = new PlanDB();
         }
         return instance;
@@ -31,54 +33,55 @@ public class PlanDB {
     public List<Plan> fillPlans() throws SQLException {
         List<Plan> plans = new ArrayList<>();
         String sqlString = """
-                            SELECT * FROM plan;
-                            """;
+                SELECT * FROM plan;
+                """;
         //planid, planname, likes, dislikes, creator
         Statement statement = database.getStatement();
         ResultSet resultSet = statement.executeQuery(sqlString);
-        while (resultSet.next()){
+        while (resultSet.next()) {
             plans.add(new Plan(resultSet.getInt("planid"),
-                    resultSet.getString("planname"),resultSet.getInt("likes"),
+                    resultSet.getString("planname"), resultSet.getInt("likes"),
                     resultSet.getInt("dislikes"), resultSet.getString("creator")));
         }
         database.releaseStatement(statement);
         return plans;
     }
 
-    public List<Plan> getAllPlans(){
+    public List<Plan> getAllPlans() {
         return planList;
     }
 
+    //Sortieren
     public List<Plan> getSortedPlans(String criteria) {
         List<Plan> plans = planList;
         if (criteria.equals("best")) {
             Collections.sort(plans, Comparator.comparingInt(Plan::getNumLikes).reversed().thenComparing(Plan::getNumDislikes));
         } else {
-            Collections.sort(plans, Comparator.comparingInt(Plan::getNumDislikes).reversed().thenComparing(Plan::getNumLikes));
+            Collections.sort(plans, Comparator.comparingInt(Plan::getNumLikes).thenComparing(Plan::getNumLikes));
         }
         return plans;
     }
 
     //Get ID for new Plan => getHighestID + 1 for the new TP
     public int getNewID() {
-        int id = -1; // Initialisieren Sie die höchste Plan-ID mit einem negativen Wert
+        int id = -1; // Initialisiere die höchste Plan-ID mit einem negativen Wert
         for (Plan plan : planList) {
             int currentPlanId = plan.getPlanid();
             if (currentPlanId > id) {
                 id = currentPlanId;
             }
         }
-        return id +1;
+        return id + 1;
 
     }
 
     //check if the inserted exercise is a real exercise
-    public boolean isRealExerciseID(int id){
+    public boolean isRealExerciseID(int id) {
         try {
             ExerciseDB db = ExerciseDB.getInstance();
             List<Exercise> exerciseList = db.loadAllExercises();
             Optional<Exercise> e = exerciseList.stream().filter(exercise -> exercise.getExerciseID() == id).findFirst();
-            if (e.isPresent()){
+            if (e.isPresent()) {
                 return true;
             }
         } catch (SQLException e) {
@@ -95,58 +98,79 @@ public class PlanDB {
     }
 
     //returns single Plan by its ID
-    public Plan getPlanByID(int id){
+    public Plan getPlanByID(int id) {
         return planList.stream().filter(p -> p.getPlanid() == id)
                 .findFirst()
                 .orElseThrow(NoSuchElementException::new);
     }
 
     //Update the rating of a plan (1 = like, 0 = dislike)
-    public int updatePlanRating(int planid, int rating){
+    public void updatePlanRating(int planid, int rating, boolean wasAlreadyRated) {
         Plan plan = getPlanByID(planid);
         int rates = 0;
         String type = "";
-        if(rating == 1){
-            rates = plan.getNumLikes() + 1;
-            plan.setNumLikes(rates);
-            type = "likes";
-        }
-        else {
-            rates = plan.getNumDislikes() + 1;
-            plan.setNumDislikes(rates);
-            type = "dislikes";
-        }
+        if (wasAlreadyRated) {
+            updateExistingPlanRating(planid, rating);
+            return;
+        } else {
+            if (rating == 1) {
+                rates = plan.getNumLikes() + 1;
+                plan.setNumLikes(rates);
+                type = "likes";
+            } else {
+                rates = plan.getNumDislikes() + 1;
+                plan.setNumDislikes(rates);
+                type = "dislikes";
+            }
 
-        String sqlString = "UPDATE plan SET " + type + " = "+ rates +" WHERE planid = " + planid+";";
+            String sqlString = "UPDATE plan SET " + type + " = " + rates + " WHERE planid = " + planid + ";";
+            try {
+                database.getStatement().execute(sqlString);
+                System.out.println("Insert successful");
+            } catch (SQLException e) {
+                System.err.format("Insert INTO failed!");
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    //update rating for a plan, that has already been rated by a user
+    public void updateExistingPlanRating(int planid, int rating) {
+        int ratingLikes = 0;
+        int ratingDislikes = 0;
+        Plan plan = getPlanByID(planid);
+        if (rating == 1) {
+            ratingLikes = plan.getNumLikes() + 1;
+            ratingDislikes = plan.getNumDislikes() - 1;
+        } else {
+            ratingLikes = plan.getNumLikes() - 1;
+            ratingDislikes = plan.getNumDislikes() + 1;
+        }
+        plan.setNumLikes(ratingLikes);
+        plan.setNumDislikes(ratingDislikes);
+
+        String sqlString = "UPDATE plan SET likes = " + ratingLikes + ", dislikes = " + ratingDislikes + " WHERE planid = " + planid + ";";
         try {
             database.getStatement().execute(sqlString);
-            System.out.println("Insert successful");
+            System.out.println("Update successful");
         } catch (SQLException e) {
-            System.err.format("Insert INTO failed!");
+            System.err.format("Update failed!");
             throw new RuntimeException(e);
         }
-        return rates;
     }
-
-
-    //SELECT * FROM planexercise WHERE planid = 1;
-    public List<PlanExercise> getExercisesForPlan(int planId){
-        List<PlanExercise> planExercises = new ArrayList<>();
-        Plan plan = getPlanByID(planId);
-        planExercises = plan.getExercieceList();
-        return planExercises;
-    }
-
-    public void deletePlan(Plan plan){
-        if(planList.contains(plan)){
+    //delete plan (only List, not DB)
+    public void deletePlan(Plan plan) {
+        if (planList.contains(plan)) {
             planList.remove(plan);
         }
     }
 
-    public void deletePlanFromDB(int id){
+    //delete Plan from DB (also from planexercise)
+    public void deletePlanFromDB(int id) {
         try {
+            //likedPlanDB.deletePlan(id);
             String sqlStringForPE = """ 
-                            DELETE FROM planexercise WHERE "planId" = """ + id + ";";
+                    DELETE FROM planexercise WHERE "planId" = """ + id + ";";
             String sqlString = "DELETE FROM plan WHERE planid = " + id + ";";
             database.getStatement().execute(sqlStringForPE);
             database.getStatement().execute(sqlString);
@@ -155,26 +179,29 @@ public class PlanDB {
         }
     }
 
-    public List<Plan> getPlansFromUser(String username){
+    //get Plans from specific creator
+    public List<Plan> getPlansFromUser(String username) {
         List<Plan> plans = new ArrayList<>();
-        for (Plan plan:planList) {
-            if(plan.getCreator().equals(username)){
+        for (Plan plan : planList) {
+            if (plan.getCreator().equals(username)) {
                 plans.add(plan);
             }
         }
         return plans;
     }
 
-    public void addPlan(Plan plan){
-        if(!planList.contains(plan)){
+    //add Plan to List
+    public void addPlan(Plan plan) {
+        if (!planList.contains(plan)) {
             planList.add(plan);
         }
     }
 
-    public void insertExerciseToPlan(PlanExercise planExercise){
+    //add Exercise to Plan
+    public void insertExerciseToPlan(PlanExercise planExercise) {
         int id = planExercise.getPlanId();
-        for (Plan plan : planList){
-            if(plan.getPlanid()==id){
+        for (Plan plan : planList) {
+            if (plan.getPlanid() == id) {
                 plan.addPlanExercise(planExercise);
                 planList.remove(plan);
                 planList.add(plan);
@@ -191,22 +218,24 @@ public class PlanDB {
         }
     }
 
-    public List<PlanExercise> getPlanexercisesForPlan(int id){
+    //get Planexercises for specific plan
+    public List<PlanExercise> getPlanexercisesForPlan(int id) {
         List<PlanExercise> planExerciseList = new ArrayList<>();
-        for (Plan plan : planList){
-            if (plan.getPlanid() == id){
+        for (Plan plan : planList) {
+            if (plan.getPlanid() == id) {
                 planExerciseList = plan.getExercieceList();
             }
         }
         return planExerciseList;
     }
 
-    public void fillPlansWithTheirExercises(List<PlanExercise> planExercises){
+    //in order to have the same values in the list and in the DB
+    public void fillPlansWithTheirExercises(List<PlanExercise> planExercises) {
         List<Plan> plans = new ArrayList<>();
-        for (Plan plan : planList){
-            for (PlanExercise planExercise:planExercises) {
-                if(plan.getPlanid() == planExercise.getPlanId()){
-                    if(!plans.contains(plan)){
+        for (Plan plan : planList) {
+            for (PlanExercise planExercise : planExercises) {
+                if (plan.getPlanid() == planExercise.getPlanId()) {
+                    if (!plans.contains(plan)) {
                         plans.add(plan);
                     }
                     plan.addPlanExercise(planExercise);

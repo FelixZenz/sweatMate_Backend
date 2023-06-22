@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+//Klasse für Übungen eines Planes (PlanID als PK)
 public class PlanExercise {
     @Id
     private int planId;

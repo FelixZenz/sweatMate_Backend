@@ -20,7 +20,7 @@
         <li><a href="./../index.html">Home</a></li>
         <li><a href="./../discover/discover.html">Discover</a></li>
         <li><a href="./../about.html">About</a></li>
-        <li><a href="/"><img src="./../images/icon_login_active.svg" alt="Login"></a></li>
+        <li><a href="./login.html"><img src="./../images/icon_login_active.svg" alt="Login"></a></li>
       </ul>
     </div>
   </nav>
@@ -42,14 +42,13 @@
         </div>
         <div class="group">
           <!-- Password input field -->
-          <input type="password" id="password" name="password" required>
-          <span class="highlight"></span>
+          <input type="text" id="password" name="password" onclick="togglePasswordVisibility('password');" required>
           <span class="bar"></span>
           <label>Password</label>
         </div>
         <div>
           <!-- Log in button -->
-            <input class="button-primary" value="Log in" onclick="login(username.value, password.value);">
+          <button class="button-primary" onclick="login(username.value, password.value);">Log in</button>
         </div>
         <div>
           <!-- "Don't have an account?" button -->
@@ -59,6 +58,9 @@
         </div>
     </div>
   </div>
+
+  <div class="snackbar green">Logged in</div>
+  <div class="snackbar red">Failed to log in</div>
 </main>
 </body>
 </html>

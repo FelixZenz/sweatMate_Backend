@@ -13,6 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+//Klasse für die Trainingspläne
 public class Plan {
     @Id
     private int planid;
@@ -39,8 +40,8 @@ public class Plan {
         this.creator = creator;
     }
 
-    public void addPlanExercise(PlanExercise exercise){
-        if(!exercieceList.contains(exercise)) {
+    public void addPlanExercise(PlanExercise exercise) {
+        if (!exercieceList.contains(exercise)) {
             exercieceList.add(exercise);
         }
     }

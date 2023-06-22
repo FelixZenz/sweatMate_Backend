@@ -5,10 +5,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-//Klasse für den Login mit usernamen und passwort
-public class LoginData {
+@NoArgsConstructor
+//Klasse für LikedPlan (PlanID & username als PK)
+public class LikedPlan {
     private String username;
-    private String pwd;
+    private int planid;
+    private int rating;
 }
