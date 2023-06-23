@@ -525,6 +525,7 @@ async function addPlanExercise(exElem, repElem, setElem) {
 
 //die hinzugefügte Übung ausgeben
 function displayAddedExercises(arr) {
+    isExerciseAdded();
     let html = '';
     for (var elem of arr) {
         html +=
@@ -635,5 +636,16 @@ function togglePasswordVisibility(id) {
     password.setAttribute('type', type);
 }
 
+function isExerciseAdded() {
+    var navLogo = document.getElementById('nav-logo');
+    var navHome = document.getElementById('nav-home');
+    var navDiscover = document.getElementById('nav-discover');
+    var navAbout = document.getElementById('nav-about');
+    var navLogin = document.getElementById('nav-login');
 
-
+    navLogo.href = '../index.html';
+    navHome.href = '../index.html';
+    navDiscover.href = 'discover.html';
+    navAbout.href = '../about.html';
+    navLogin.href = '../account/login.html';
+}
